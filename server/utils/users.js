@@ -15,7 +15,7 @@ const USERS = [
         id: 3,
         email: 'oleg212@gmail.com',
         username: 'bedolaga',
-        rooms: []
+        rooms: [2]
     },
     {
         id: 4,
@@ -51,10 +51,10 @@ const ROOMS = [
     }
 ]
 const SOCKETS = [
-    {
+    /* {
         userId: 1,
-        socketId: undefined
-    }
+        socketId: 123
+    } */
 ]
 function getFriends(userId, query) {
     const userRooms = USERS.find(user => user.id === userId).rooms;
@@ -76,8 +76,20 @@ function deleteSocket(userId) {
     const SocketIndex = SOCKETS.findIndex(socket => socket.userId === userId);
     SOCKETS.splice(SocketIndex, 1);
 }
+function getSocket(userId) {
+    return SOCKETS.find(socket => socket.userId === userId)?.socketId
+}
 function getMessages(userId, friendId) {
     return ROOMS.find(room => new Set([...room.participants, userId, friendId]).size === 2)?.messages;
+}
+
+function setMessages(newMessage) {
+    const messagesList = ROOMS.find(room => new Set([...room.participants, newMessage.sender, newMessage.recipient]).size === 2).messages;
+    messagesList.push({
+        ...newMessage,
+        recipient: undefined
+    })
+    return newMessage.id;
 }
 function getUserById(userId) {
     const user = USERS.find(user => user.id === userId);
@@ -90,4 +102,4 @@ function getUserByEmail(userEmail) {
     return user;
 }
 
-module.exports = {getUserById, getUserByEmail, getFriends, setSocket, deleteSocket, getMessages}
+module.exports = {getUserById, getUserByEmail, getFriends, setSocket, deleteSocket, getMessages, setMessages, getSocket}

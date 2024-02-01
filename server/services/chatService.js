@@ -1,4 +1,5 @@
-const { getFriendsDAL, setSocketDAL, deleteSocketDAL, getMessagesDAL } = require('../dal/chatDAL.js')
+const { getFriendsDAL, setSocketDAL, deleteSocketDAL, getMessagesDAL, setMessagesDAL, getSocketDAL } = require('../dal/chatDAL.js');
+const {nanoid} = require('nanoid')
 
 function getFriendsService(userId, query = '') {
     try {
@@ -28,6 +29,15 @@ function deleteSocketService(userId) {
         throw e;
     }
 }
+function getSocketService(userId) {
+    try {
+       const result = getSocketDAL(userId);
+       return {socket: result};
+
+    } catch(e) {
+        throw e;
+    }
+}
 function getMessagesService(userId, friendId) {
     try {
        const result = getMessagesDAL(userId, friendId);
@@ -37,5 +47,18 @@ function getMessagesService(userId, friendId) {
         throw e;
     }
 }
+function setMessagesService(message) {
+    try {
+        const messageForBD = {
+            id: nanoid(8),
+            ...message
+        }
+       const result = setMessagesDAL(messageForBD);
+       return {messageId: result};
 
-module.exports = {getFriendsService, setSocketService, deleteSocketService, getMessagesService}
+    } catch(e) {
+        throw e;
+    }
+}
+
+module.exports = {getFriendsService, setSocketService, deleteSocketService, getMessagesService, setMessagesService, getSocketService}

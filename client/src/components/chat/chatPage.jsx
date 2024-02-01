@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {useLocation} from 'react-router-dom'
 import Title from '../common/Title';
 import MyFriends from './myPenFriends';
-import { FriendsContext, SetFriendsContext, UserContext, SetActiveFriendContext, ActiveFriendContext } from '../../Context/ChatContext';
+import { FriendsContext, SetFriendsContext, UserContext, SetActiveFriendContext, ActiveFriendContext, SendMessageContext, MessagesContext, SetMessagesContext } from '../../Context/ChatContext';
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import axios from 'axios';
 export default function ChatPage() {
     const [friends, setFriends] = useState([]);
     const [activeFriend, setActiveFriend] = useState(null);
+    const [messages, setMessages] = useState([])
     const socket = useRef(null);
     const location = useLocation();
     const user = location.state.user
@@ -26,7 +27,7 @@ export default function ChatPage() {
     }, [])
     useEffect(() => {
       socket.current.on('connect', async () => {
-        const result = await axios('http://localhost:5000/chat/sockets', {
+        await axios('http://localhost:5000/chat/sockets', {
             method: 'POST',
             data: JSON.stringify({userId: user.id, socketId: socket.current.id}),
             headers: {
@@ -40,7 +41,7 @@ export default function ChatPage() {
     }, [])
     useEffect(() => {
       socket.current.on('disconnect', async () => {
-        const result = await axios('http://localhost:5000/chat/sockets', {
+        await axios('http://localhost:5000/chat/sockets', {
             method: 'DELETE',
             data: JSON.stringify({userId: user.id}),
             headers: {
@@ -52,28 +53,36 @@ export default function ChatPage() {
         socket.current.removeAllListeners('disconnect')
       }
     }, [])
+    useEffect(() => {
+      socket.current.on('MESSAGE:GET', message => {
+        setMessages((prevMessages) => [...prevMessages, message]) 
+      })
+      return () => {
+        socket.current.removeAllListeners('MESSAGE:GET')
+      }
+    }, [])
     async function sendMessage(content) {
-      
       const message = {
         sender: user.id,
+        recipient: activeFriend.id,
         content,
         timestamp: new Date(),
-        recipient: activeFriend.id
       }
+      const result = await axios('http://localhost:5000/chat/messages', {
+          method: 'POST',
+          data: JSON.stringify({message}),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      })
+      const messageId = result.data.messageId;
+      console.log(messageId)
+      message.id = messageId;
       socket.current.emit('MESSAGE:SEND', message, async (status) => {
         if (status === 'delivered') {
-          const result = await axios('http://localhost/chat/messages', {
-            method: 'POST',
-            body: JSON.stringify(message),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
+          console.log('Сообщение доставлено!')
         }
       })
-    }
-    async function getSocket(userId) {
-      const result = await axios 
     }
     return (
         <UserContext.Provider value={user}>
@@ -92,7 +101,13 @@ export default function ChatPage() {
               </section>
               <section>
                 <ActiveFriendContext.Provider value={activeFriend}>
-                  <ChatPanel/>
+                  <SendMessageContext.Provider value={sendMessage}>
+                    <MessagesContext.Provider value={messages}>
+                      <SetMessagesContext.Provider value={setMessages}>
+                        <ChatPanel/>
+                      </SetMessagesContext.Provider>
+                    </MessagesContext.Provider>
+                  </SendMessageContext.Provider>
                 </ActiveFriendContext.Provider>
               </section>
           </main>

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { ActiveFriendContext } from '../../Context/ChatContext'
 import PenFriendInfo from './penFriendInfo';
 import MessageForm from './sendMessage/messageForm';

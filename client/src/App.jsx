@@ -1,10 +1,7 @@
+import RoutesProvider from './hoc/RoutesProvider'
 
-function App() {
-
+export default function App() {
   return (
-    <>
-    </>
+    <RoutesProvider></RoutesProvider>
   )
 }
-
-export default App

@@ -5,6 +5,6 @@ const { chatRouter } = require('./chatRouter');
 const mainRouter = Router();
 
 mainRouter.use('/login', loginRouter);
-mainRouter.use('/friends', chatRouter);
+mainRouter.use('/chat', chatRouter);
 
 module.exports.mainRouter = mainRouter;

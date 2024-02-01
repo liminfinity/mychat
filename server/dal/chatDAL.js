@@ -1,4 +1,4 @@
-const { getFriends } = require("../utils/users");
+const { getFriends, setSocket, deleteSocket, getMessages } = require("../utils/users");
 
 
 function getFriendsDAL(userId, query) {
@@ -11,4 +11,34 @@ function getFriendsDAL(userId, query) {
         throw e;
     }
 }
-module.exports = {getFriendsDAL}
+
+function setSocketDAL(userId, socketId) {
+    try {
+       setSocket(userId, socketId);
+       return true;
+
+    } catch(e) {
+        throw e;
+    }
+}
+function deleteSocketDAL(userId) {
+    try {
+       deleteSocket(userId);
+       return true;
+
+    } catch(e) {
+        throw e;
+    }
+}
+function getMessagesDAL(userId, friendId) {
+    try {
+       const result = getMessages(userId, friendId);
+       if (!result) throw new Error('dialog not found')
+       return result;
+
+    } catch(e) {
+        throw e;
+    }
+}
+
+module.exports = {getFriendsDAL, setSocketDAL, deleteSocketDAL, getMessagesDAL}

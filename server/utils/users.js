@@ -30,6 +30,7 @@ const ROOMS = [
         participants: [1, 2],
         messages: [
             {
+                id: 1,
                 sender: 1,
                 content: 'Привет!',
                 timestamp: new Date()
@@ -41,6 +42,7 @@ const ROOMS = [
         participants: [1, 3],
         messages: [
             {
+                id: 2,
                 sender: 1,
                 content: 'Как дела?',
                 timestamp: new Date()
@@ -67,6 +69,16 @@ function getFriends(userId, query) {
     return friendsWithLastMessage;
 
 }
+function setSocket(userId, socketId) {
+    SOCKETS.push({userId, socketId})
+}
+function deleteSocket(userId) {
+    const SocketIndex = SOCKETS.findIndex(socket => socket.userId === userId);
+    SOCKETS.splice(SocketIndex, 1);
+}
+function getMessages(userId, friendId) {
+    return ROOMS.find(room => new Set([...room.participants, userId, friendId]).size === 2)?.messages;
+}
 function getUserById(userId) {
     const user = USERS.find(user => user.id === userId);
     if (!user) return;
@@ -78,4 +90,4 @@ function getUserByEmail(userEmail) {
     return user;
 }
 
-module.exports = {getUserById, getUserByEmail, getFriends}
+module.exports = {getUserById, getUserByEmail, getFriends, setSocket, deleteSocket, getMessages}

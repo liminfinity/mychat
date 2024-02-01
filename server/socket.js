@@ -6,15 +6,18 @@ module.exports.listen = (app) => {
         cors: {
             origin: '*'
         },
-        path: '/chat'
+        path: '/chat-io'
     })
-    io.sockets.on('connection', socket => {
+    io.sockets.on('connection', async socket => {
         /* socket.disconnect() */
         const user = JSON.parse(socket.handshake.query?.user);
         io.sockets.emit('USER:ONLINE', user);
         socket.on('disconnect', reason => {
             io.emit('USER:OFFLINE', user);
             console.log('goodbye!')
+        })
+        socket.on('MESSAGE:SEND', (message, cb) => {
+            
         })
     })
     return io;

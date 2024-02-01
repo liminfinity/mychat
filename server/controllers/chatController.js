@@ -1,4 +1,4 @@
-const { getFriendsService } = require("../services/chatService");
+const { getFriendsService, setSocketService, deleteSocketService, getMessagesService } = require("../services/chatService");
 
 function chatGetFriends(req, res) {
     try {
@@ -13,5 +13,36 @@ function chatGetFriends(req, res) {
     }
 }
 
+function chatSetSocket(req, res) {
+    try {
+        const userId = req.body.userId;
+        const socketId = req.body.socketId;
+        const result = setSocketService(userId, socketId);
+        console.info(result)
+        res.status(200).json(result)
+    } catch(e) {
+        res.status(404).json({message: e.message})
+    }
+}
+function chatDeleteSocket(req, res) {
+    try {
+        const userId = req.body.userId;
+        const result = deleteSocketService(userId);
+        res.status(200).json(result)
+    } catch(e) {
+        res.status(404).json({message: e.message})
+    }
+}
 
-module.exports = {chatGetFriends}
+function chatGetMessages(req, res) {
+    try {
+        const userId = +req.query.userId;
+        const friendId = +req.query.friendId;
+        const result = getMessagesService(userId, friendId);
+        res.status(200).json(result)
+    } catch(e) {
+        res.status(404).json({message: e.message})
+    }
+}
+
+module.exports = {chatGetFriends, chatSetSocket, chatDeleteSocket, chatGetMessages}

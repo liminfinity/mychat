@@ -12,9 +12,8 @@ export default function MyFriends() {
         let ignore = false
         async function getFriends() {
             const queryParams = new URLSearchParams({userId: user.id, q: query})
-            const response = await axios(`http://localhost:5000/friends?${queryParams.toString()}`);
+            const response = await axios(`http://localhost:5000/chat/friends?${queryParams.toString()}`);
             const friends = response.data.friends;
-            console.log(1, friends)
             if (!ignore) {
                 setFriends(friends)
             }

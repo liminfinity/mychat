@@ -1,4 +1,4 @@
-const { getFriendsDAL } = require('../dal/chatDAL.js')
+const { getFriendsDAL, setSocketDAL, deleteSocketDAL, getMessagesDAL } = require('../dal/chatDAL.js')
 
 function getFriendsService(userId, query = '') {
     try {
@@ -9,4 +9,33 @@ function getFriendsService(userId, query = '') {
         throw e;
     }
 }
-module.exports = {getFriendsService}
+
+function setSocketService(userId, socketId) {
+    try {
+       const result = setSocketDAL(userId, socketId);
+       return {success: result};
+
+    } catch(e) {
+        throw e;
+    }
+}
+function deleteSocketService(userId) {
+    try {
+       const result = deleteSocketDAL(userId);
+       return {success: result};
+
+    } catch(e) {
+        throw e;
+    }
+}
+function getMessagesService(userId, friendId) {
+    try {
+       const result = getMessagesDAL(userId, friendId);
+       return {messages: result};
+
+    } catch(e) {
+        throw e;
+    }
+}
+
+module.exports = {getFriendsService, setSocketService, deleteSocketService, getMessagesService}

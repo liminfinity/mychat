@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, Fragment } from 'react'
 import { ActiveFriendContext } from '../../Context/ChatContext'
 import PenFriendInfo from './penFriendInfo';
 import MessageForm from './sendMessage/messageForm';
@@ -14,11 +14,11 @@ export default function ChatPanel() {
                 </div>
             )}
             {activeFriend && (
-                <>
+                <Fragment key={activeFriend.id}>
                     <PenFriendInfo/>
                     <DialogPanel/>
                     <MessageForm/>
-                </>
+                </Fragment>
             )}
         </section>
     )

@@ -56,6 +56,7 @@ const SOCKETS = [
         socketId: 123
     } */
 ]
+
 function getFriends(userId, query) {
     const userRooms = USERS.find(user => user.id === userId).rooms;
     const filteredRooms = ROOMS.filter(room => userRooms.includes(room.id))
@@ -66,7 +67,10 @@ function getFriends(userId, query) {
         const lastMessage = messages[messages.length - 1];
         return {...friend, lastMessage, rooms: undefined}
     })
-    return friendsWithLastMessage;
+    const friendWithOnlineStatus = friendsWithLastMessage.map(friend => {
+        return {...friend, isOnline: (SOCKETS.includes(socket => socket.userId === friend.id))}
+    })
+    return friendWithOnlineStatus;
 
 }
 function setSocket(userId, socketId) {

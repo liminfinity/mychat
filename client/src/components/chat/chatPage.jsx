@@ -48,10 +48,49 @@ export default function ChatPage() {
               'Content-Type': 'application/json'
             }
         })
+        socket.current.emit('USER:OFFLINE', user.id)
       })
       return () => {
         socket.current.removeAllListeners('disconnect')
       }
+    }, [])
+    useEffect(() => {
+      socket.current.on('USER:ONLINE', userId => {
+
+        const onlineFriend = friends.find(friend => friend.id === userId);
+        if (onlineFriend) {
+          setFriends((prevFriend) => {
+            const indexFriend = prevFriend.findIndex(friend => friend.id === userId);
+            return [
+              ...prevFriend.slice(0, indexFriend),
+              {
+                ...onlineFriend,
+                isOnline: true
+              },
+              ...prevFriend.slice(indexFriend + 1)
+            ]
+          })
+        }
+      })
+    }, [])
+    useEffect(() => {
+      socket.current.on('USER:OFFLINE', userId => {
+        
+        const offlineFriend = friends.find(friend => friend.id === userId);
+        if (offlineFriend) {
+          setFriends((prevFriend) => {
+            const indexFriend = prevFriend.findIndex(friend => friend.id === userId);
+            return [
+              ...prevFriend.slice(0, indexFriend),
+              {
+                ...offlineFriend,
+                isOnline: false
+              },
+              ...prevFriend.slice(indexFriend + 1)
+            ]
+          })
+        }
+      })
     }, [])
     useEffect(() => {
       socket.current.on('MESSAGE:GET', message => {

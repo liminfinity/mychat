@@ -5,6 +5,7 @@ export default function PenFriend({friend}) {
     const setActiveFriend = useContext(SetActiveFriendContext)
     const lastMessage = friend.lastMessage;
     const timestamp = new Date(lastMessage.timestamp)
+    const onlineMessage = friend?.isOnline;
 
     function handleClick() {
       setActiveFriend(friend)
@@ -15,6 +16,8 @@ export default function PenFriend({friend}) {
           <span>{friend.username}</span>
           <span>{(user.id === lastMessage.sender ? 'Вы: ' : '') + lastMessage.content}</span>
           <span>{timestamp.toLocaleTimeString()}</span>
+          <span>{timestamp.toLocaleTimeString()}</span>
+          <span>({onlineMessage ? 'онлайн' : 'оффлайн'})</span>
       </li>
     )
   }

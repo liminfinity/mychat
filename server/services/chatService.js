@@ -32,7 +32,7 @@ function deleteSocketService(userId) {
 function getSocketService(userId) {
     try {
        const result = getSocketDAL(userId);
-       return {socket: result};
+       return {[userId ? 'socket' : 'onlineUsers']: result};
 
     } catch(e) {
         throw e;

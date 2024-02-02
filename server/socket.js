@@ -1,6 +1,12 @@
 const {Server} = require('socket.io');
 const axios = require('axios')
 
+async function getOnlineUsers() {
+    const result = await axios('http://localhost:5000/chat/sockets');
+    const onlineUsers = result.data.onlineUsers;
+    return onlineUsers
+}
+
 module.exports.listen = (app) => {
     const io = new Server(app, {
         cors: {
@@ -12,8 +18,10 @@ module.exports.listen = (app) => {
         /* socket.disconnect() */
         const user = JSON.parse(socket.handshake.query?.user);
         socket.broadcast.emit('USER:ONLINE', user.id);
+        const onlineUsers = await getOnlineUsers();
+        socket.emit('USERS:ONLINE', onlineUsers)
         socket.on('disconnect', reason => {
-            io.emit('USER:OFFLINE', user.id);
+            socket.broadcast.emit('USER:OFFLINE', user.id);
             console.log('goodbye!')
         })
         socket.on('MESSAGE:SEND', async (message, cb) => {

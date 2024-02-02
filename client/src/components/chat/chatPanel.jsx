@@ -7,10 +7,10 @@ import DialogPanel from './dialogPanel';
 export default function ChatPanel() {
     const activeFriend = useContext(ActiveFriendContext)
     return (
-        <section>
+        <>
             {!activeFriend && (
                 <div>
-                    <span>Чат не выбран</span>
+                    <span>Select chat</span>
                 </div>
             )}
             {activeFriend && (
@@ -20,6 +20,6 @@ export default function ChatPanel() {
                     <MessageForm/>
                 </Fragment>
             )}
-        </section>
+        </>
     )
 }

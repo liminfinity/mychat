@@ -6,6 +6,9 @@ import { FriendsContext, SetFriendsContext, UserContext, SetActiveFriendContext,
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
 import axios from 'axios';
+import ChatHeader from './chatHeader';
+import ChatPageContainer from './ChatPageContainer';
+import styles from '../../styles/chatPage.module.scss'
 
 export default function ChatPage() {
     const [friends, setFriends] = useState([]);
@@ -56,7 +59,6 @@ export default function ChatPage() {
     }, [])
     useEffect(() => {
       socket.current.on('USER:ONLINE', userId => {
-
         const onlineFriend = friends.find(friend => friend.id === userId);
         if (onlineFriend) {
           setFriends((prevFriend) => {
@@ -72,10 +74,30 @@ export default function ChatPage() {
           })
         }
       })
-    }, [])
+    }, [friends])
+    useEffect(() => {
+      socket.current.on('USERS:ONLINE', onlineUsers => {
+        for (const userId of onlineUsers) {
+          const onlineFriend = friends.find(friend => friend.id === userId);
+          if (onlineFriend) {
+            setFriends((prevFriend) => {
+              const indexFriend = prevFriend.findIndex(friend => friend.id === userId);
+              console.log(indexFriend);
+              return [
+                ...prevFriend.slice(0, indexFriend),
+                {
+                  ...onlineFriend,
+                  isOnline: true
+                },
+                ...prevFriend.slice(indexFriend + 1)
+              ]
+            })
+          }
+        }
+      })
+    }, [friends])
     useEffect(() => {
       socket.current.on('USER:OFFLINE', userId => {
-        
         const offlineFriend = friends.find(friend => friend.id === userId);
         if (offlineFriend) {
           setFriends((prevFriend) => {
@@ -91,7 +113,7 @@ export default function ChatPage() {
           })
         }
       })
-    }, [])
+    }, [friends])
     useEffect(() => {
       socket.current.on('MESSAGE:GET', message => {
         setMessages((prevMessages) => [...prevMessages, message]) 
@@ -125,11 +147,12 @@ export default function ChatPage() {
     }
     return (
         <UserContext.Provider value={user}>
-            <main>
-              <section>
-                <Title level={2}>Чат</Title>
+            <ChatPageContainer>
+              <ChatHeader className={styles.chatHeader}/>
+              <section className={styles.chatTitle}>
+                <Title level={2}>Chat</Title>
               </section>
-              <section>
+              <section className={styles.chatFriends}>
                 <FriendsContext.Provider value={friends}>
                     <SetFriendsContext.Provider value={setFriends}>
                         <SetActiveFriendContext.Provider value={setActiveFriend}>
@@ -138,7 +161,7 @@ export default function ChatPage() {
                     </SetFriendsContext.Provider>
                 </FriendsContext.Provider>
               </section>
-              <section>
+              <section className={styles.chatDialog}>
                 <ActiveFriendContext.Provider value={activeFriend}>
                   <SendMessageContext.Provider value={sendMessage}>
                     <MessagesContext.Provider value={messages}>
@@ -149,7 +172,7 @@ export default function ChatPage() {
                   </SendMessageContext.Provider>
                 </ActiveFriendContext.Provider>
               </section>
-          </main>
+          </ChatPageContainer>
         </UserContext.Provider>
     )
 }

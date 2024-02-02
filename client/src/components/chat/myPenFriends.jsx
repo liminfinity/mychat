@@ -26,10 +26,10 @@ export default function MyFriends() {
     return (
         <QueryContext.Provider value={query}>
             <SetQueryContext.Provider value={setQuery}>
-                <section>
-                    <SearchForm placeholder='Найти...'></SearchForm>
+                <>
+                    <SearchForm placeholder='Search...'></SearchForm>
                     <PenFriendsList/>
-                </section>
+                </>
             </SetQueryContext.Provider>
         </QueryContext.Provider>
         

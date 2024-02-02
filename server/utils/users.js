@@ -3,18 +3,21 @@ const USERS = [
         id: 1,
         email: 'polieshko04@gmail.com',
         username: 'liminfinity',
+        avatar: 'http://localhost:5000/assets/img/artem.jpg',
         rooms: [1, 2]
     },
     {
         id: 2,
         email: 'anna124@gmail.com',
         username: 'annakiruan',
+        avatar: 'http://localhost:5000/assets/img/anya.jpg',
         rooms: [1]
     },
     {
         id: 3,
         email: 'oleg212@gmail.com',
         username: 'bedolaga',
+        avatar: 'http://localhost:5000/assets/img/oleg.jpg',
         rooms: [2]
     },
     {
@@ -81,7 +84,12 @@ function deleteSocket(userId) {
     SOCKETS.splice(SocketIndex, 1);
 }
 function getSocket(userId) {
-    return SOCKETS.find(socket => socket.userId === userId)?.socketId
+    if (userId) {
+        return SOCKETS.find(socket => socket.userId === userId)?.socketId
+    }
+    else {
+        return SOCKETS.map(socket => socket.userId);
+    } 
 }
 function getMessages(userId, friendId) {
     return ROOMS.find(room => new Set([...room.participants, userId, friendId]).size === 2)?.messages;

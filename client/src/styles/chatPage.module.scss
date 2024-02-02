@@ -1,0 +1,20 @@
+.chatPage {
+    display: grid;
+    align-items: center;
+    grid-template-areas: "myHeader myHeader myHeader myHeader"
+                        "title title title title"
+                        "friends chat chat chat";
+}
+
+.chatHeader {
+    grid-area: myHeader;
+}
+.chatTitle {
+    grid-area: title;
+}
+.chatFriends {
+    grid-area: friends;
+}
+.chatDialog {
+    grid-area: chat;
+}

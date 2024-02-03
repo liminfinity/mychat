@@ -36,7 +36,7 @@ const ROOMS = [
                 id: 1,
                 sender: 1,
                 content: 'Привет!',
-                timestamp: new Date()
+                timestamp: new Date("2024-01-26")
             }
         ]
     },

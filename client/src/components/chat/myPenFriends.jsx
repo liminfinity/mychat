@@ -27,7 +27,7 @@ export default function MyFriends() {
         <QueryContext.Provider value={query}>
             <SetQueryContext.Provider value={setQuery}>
                 <>
-                    <SearchForm placeholder='Search...'></SearchForm>
+                    <SearchForm className='px-6 z-10 outline-offset-0' placeholder='Search...'></SearchForm>
                     <PenFriendsList/>
                 </>
             </SetQueryContext.Provider>

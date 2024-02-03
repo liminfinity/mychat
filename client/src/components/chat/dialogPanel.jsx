@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { ActiveFriendContext, MessagesContext, SetMessagesContext, UserContext } from '../../Context/ChatContext'
 import axios from 'axios'
-import Message from './message'
+import MessagePanel from './message/messagePanel'
 
 export default function DialogPanel() {
     const user = useContext(UserContext)
@@ -19,9 +19,9 @@ export default function DialogPanel() {
         getMessages()
     }, [])
     return (
-        <ul>
+        <ul className='py-8 px-3 flex-grow flex flex-col gap-12 overflow-y-auto overflow-x-hidden'>
             {messages.map(message => {
-                return <Message key={message.id} message={message}/>
+                return <MessagePanel key={message.id} message={message} className={message.sender === user.id ? ' self-end' : ' self-start'}/>
             })}
         </ul>
     )

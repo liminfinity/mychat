@@ -1,13 +1,13 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { QueryContext, SetQueryContext } from '../../Context/CommonContext'
 
-export default function SearchInput({placeholder}) {
+export default function SearchInput({placeholder, setFocus}) {
   const query = useContext(QueryContext);
   const setQuery = useContext(SetQueryContext);
-  
+
   return (
     <>
-      <input type="search" placeholder={placeholder} value={query} onChange={(e) => setQuery(e.target.value)} />
+      <input onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} className='flex-grow outline-none' type="search" placeholder={placeholder} value={query} onChange={(e) => setQuery(e.target.value)}/>
     </>
   )
 }

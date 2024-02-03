@@ -8,7 +8,7 @@ import ChatPanel from './chatPanel';
 import axios from 'axios';
 import ChatHeader from './chatHeader';
 import ChatPageContainer from './ChatPageContainer';
-import styles from '../../styles/chatPage.module.scss'
+
 
 export default function ChatPage() {
     const [friends, setFriends] = useState([]);
@@ -147,32 +147,36 @@ export default function ChatPage() {
     }
     return (
         <UserContext.Provider value={user}>
-            <ChatPageContainer>
-              <ChatHeader className={styles.chatHeader}/>
-              <section className={styles.chatTitle}>
-                <Title level={2}>Chat</Title>
-              </section>
-              <section className={styles.chatFriends}>
-                <FriendsContext.Provider value={friends}>
-                    <SetFriendsContext.Provider value={setFriends}>
-                        <SetActiveFriendContext.Provider value={setActiveFriend}>
-                            <MyFriends/>
-                        </SetActiveFriendContext.Provider>
-                    </SetFriendsContext.Provider>
-                </FriendsContext.Provider>
-              </section>
-              <section className={styles.chatDialog}>
-                <ActiveFriendContext.Provider value={activeFriend}>
-                  <SendMessageContext.Provider value={sendMessage}>
-                    <MessagesContext.Provider value={messages}>
-                      <SetMessagesContext.Provider value={setMessages}>
-                        <ChatPanel/>
-                      </SetMessagesContext.Provider>
-                    </MessagesContext.Provider>
-                  </SendMessageContext.Provider>
-                </ActiveFriendContext.Provider>
-              </section>
-          </ChatPageContainer>
+            <main className='flex flex-col h-screen'>
+              <ChatHeader/>
+              <ChatPageContainer>
+                <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
+                  <Title level={2} className='text-2xl text-title font-medium'>Chat</Title>
+                </section>
+                <section className='row-start-2 row-span-9 col-start-1 col-span-3 bg-mainColor flex flex-col'>
+                  <FriendsContext.Provider value={friends}>
+                      <SetFriendsContext.Provider value={setFriends}>
+                          <SetActiveFriendContext.Provider value={setActiveFriend}>
+                            <ActiveFriendContext.Provider value={activeFriend}>
+                              <MyFriends/>
+                            </ActiveFriendContext.Provider>
+                          </SetActiveFriendContext.Provider>
+                      </SetFriendsContext.Provider>
+                  </FriendsContext.Provider>
+                </section>
+                <section className='px-10 py-5 row-start-2 row-span-9 col-start-4 col-span-6 flex flex-col bg-mainColor'>
+                  <ActiveFriendContext.Provider value={activeFriend}>
+                    <SendMessageContext.Provider value={sendMessage}>
+                      <MessagesContext.Provider value={messages}>
+                        <SetMessagesContext.Provider value={setMessages}>
+                          <ChatPanel/>
+                        </SetMessagesContext.Provider>
+                      </MessagesContext.Provider>
+                    </SendMessageContext.Provider>
+                  </ActiveFriendContext.Provider>
+                </section>
+              </ChatPageContainer>
+            </main>
         </UserContext.Provider>
     )
 }

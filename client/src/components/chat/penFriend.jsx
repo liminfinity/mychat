@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { ActiveFriendContext, SetActiveFriendContext, UserContext } from '../../Context/ChatContext'
+import { ActiveFriendContext, SetActiveFriendContext, UserContext } from '../../context/ChatContext'
 import Avatar from './Avatar';
 import Title from '../common/Title';
 import { getDate } from '../../utils/formatMessage';

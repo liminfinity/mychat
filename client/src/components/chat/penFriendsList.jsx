@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import PenFriend from './penFriend'
-import { FriendsContext } from '../../Context/ChatContext'
+import { FriendsContext } from '../../context/ChatContext'
 
 export default function PenFriendsList() {
   const friends = useContext(FriendsContext)

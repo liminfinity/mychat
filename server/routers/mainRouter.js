@@ -1,10 +1,10 @@
 const {Router} = require('express');
-const { loginRouter } = require('./loginRouter');
+const { authRouter } = require('./authRouter');
 const { chatRouter } = require('./chatRouter');
 
 const mainRouter = Router();
 
-mainRouter.use('/login', loginRouter);
+mainRouter.use('/auth', authRouter);
 mainRouter.use('/chat', chatRouter);
 
 module.exports.mainRouter = mainRouter;

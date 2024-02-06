@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
-import { QueryContext, SetQueryContext } from '../../../Context/CommonContext'
+import { QueryContext } from '../../../context/CommonContext'
 
 export default function MessageInput({placeholder, className}) {
   
-  const message = useContext(QueryContext);
-  const setMessage = useContext(SetQueryContext);
+  const {message, setMessage} = useContext(QueryContext);
 
   return (
     <>

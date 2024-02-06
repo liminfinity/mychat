@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { ActiveFriendContext, MessagesContext, SetMessagesContext, UserContext } from '../../Context/ChatContext'
+import { ActiveFriendContext, MessagesContext, SetMessagesContext, UserContext } from '../../context/ChatContext'
 import axios from 'axios'
 import MessagePanel from './message/messagePanel'
 

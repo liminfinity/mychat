@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { UserContext } from '../../Context/ChatContext'
+import { UserContext } from '../../context/ChatContext'
 import Avatar from './Avatar'
 export default function ProfilePanel() {
     const user = useContext(UserContext)

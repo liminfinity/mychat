@@ -9,10 +9,13 @@
     @apply py-3 px-6 bg-myMessage rounded-2xl break-all
 }
 .button {
-    @apply cursor-pointer rounded-md transition-all
+    @apply cursor-pointer rounded-md transition-all focus:outline-sendMessage
 }
 .input {
     @apply p-2 outline-none outline-offset-0 rounded-sm focus:outline-sendMessage transition-all duration-300
+}
+.error {
+    @apply py-3 px-7 rounded-xl bg-error text-mainColor
 }
 
 @tailwind utilities;
@@ -38,4 +41,10 @@ body {
 }
 [type="search"]::-webkit-search-cancel-button {
     cursor: pointer;
+}
+.glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.37);
 }

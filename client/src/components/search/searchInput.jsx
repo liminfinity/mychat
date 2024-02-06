@@ -1,9 +1,9 @@
 import { useContext } from 'react'
-import { QueryContext, SetQueryContext } from '../../Context/CommonContext'
+import { QueryContext } from '../../context/CommonContext'
 
 export default function SearchInput({placeholder, setFocus}) {
-  const query = useContext(QueryContext);
-  const setQuery = useContext(SetQueryContext);
+  const {query, setQuery} = useContext(QueryContext);
+
 
   return (
     <>

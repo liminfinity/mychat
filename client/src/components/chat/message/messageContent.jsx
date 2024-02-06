@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { UserContext } from "../../../Context/ChatContext"
+import { UserContext } from "../../../context/ChatContext"
 export default function MessageContent({content, sender}) {
     const user = useContext(UserContext);
     const isFriend = user.id != sender;

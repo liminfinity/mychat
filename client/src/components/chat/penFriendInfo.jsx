@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { ActiveFriendContext } from '../../Context/ChatContext'
+import { ActiveFriendContext } from '../../context/ChatContext'
 import Avatar from './Avatar'
 export default function PenFriendInfo() {
     const activeFriend = useContext(ActiveFriendContext)

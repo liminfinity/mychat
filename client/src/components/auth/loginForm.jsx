@@ -19,8 +19,6 @@ export default function AuthForm() {
             const response = await AuthConnect.post('login', JSON.stringify({auth: login}));
             if (response.status === 200) {
                 const user = response.data;
-                user.id = user._id;
-                delete user._id
                 navigate('/chat', {
                     replace: true,
                     state: {

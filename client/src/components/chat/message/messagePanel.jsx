@@ -7,7 +7,7 @@ import { getDate } from '../../../utils/formatMessage'
 export default function MessagePanel({message, className}) {
     const {activePartner} = useContext(ActivePartnerContext)
     const user = useContext(UserContext)
-    const timestamp = message.timestamp
+    const timestamp = new Date(message.timestamp)
     const isFriend = activePartner.id === message.sender
     const timestampMessage = getDate(timestamp);
     return (

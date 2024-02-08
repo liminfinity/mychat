@@ -2,15 +2,14 @@ const { getUserByEmail } = require("../utils/users");
 
 const {userModel} = require('../schemas/userSchema');
 const { DAL } = require("./DAL");
-require('dotenv').config()
 
 
 class AuthDAL extends DAL {
     
     static async logIn({email, password}) {
         try {
-            const users = await userModel.find({email, password});
-            return users[0];
+            const user = await userModel.findOne({email, password});
+            return user
         } catch(e) {
             throw e                                                                       
         } 

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {useLocation} from 'react-router-dom'
 import Title from '../common/Title';
 import MyFriends from './myPenFriends';
-import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, SetMessagesContext, OnlineIdsContext } from '../../context/ChatContext';
+import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, OnlineIdsContext, GetFriendsContext } from '../../context/ChatContext';
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
 import axios from 'axios';
@@ -28,7 +28,6 @@ export default function ChatPage() {
     const user = location.state.user;
     
     async function getFriends() {
-      /* const queryParams = new URLSearchParams({userId: user.id, q: query}) */
       const res = await FriendsConnect.get('/', {
         params: {
           userId: user.id,
@@ -125,7 +124,7 @@ export default function ChatPage() {
     async function sendMessage(content) {
       const message = {
         sender: user.id,
-        recipient: activeFriend.id,
+        recipient: activePartner.id,
         content,
         timestamp: new Date(),
       }
@@ -148,34 +147,36 @@ export default function ChatPage() {
     return (
         <UserContext.Provider value={user}>
           <OnlineIdsContext.Provider value={{onlineIds}}>
-            <main className='flex flex-col h-screen'>
-              <ChatHeader/>
-              <ChatPageContainer>
-                <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
-                  <Title level={2} className='text-2xl text-title font-medium'>Chat</Title>
-                </section>
-                <section className='row-start-2 row-span-9 col-start-1 col-span-3 bg-mainColor flex flex-col'>
-                  <QueryContext.Provider value={{query, setQuery}}>
-                    <FriendsContext.Provider value={{friends}}>
-                      <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
-                        <MyFriends/>
-                      </ActivePartnerContext.Provider>
-                    </FriendsContext.Provider>
-                  </QueryContext.Provider>
-                </section>
-                <section className='px-10 py-5 row-start-2 row-span-9 col-start-4 col-span-6 flex flex-col bg-mainColor'>
-                  <ActivePartnerContext.Provider value={{activePartner}}>
-                    <SendMessageContext.Provider value={sendMessage}>
-                      <MessagesContext.Provider value={messages}>
-                        <SetMessagesContext.Provider value={setMessages}>
-                          <ChatPanel/>
-                        </SetMessagesContext.Provider>
-                      </MessagesContext.Provider>
-                    </SendMessageContext.Provider>
-                  </ActivePartnerContext.Provider>
-                </section>
-              </ChatPageContainer>
-            </main>
+            <GetFriendsContext.Provider value={getFriends}>
+              <main className='flex flex-col h-screen'>
+                <ChatHeader/>
+                <ChatPageContainer>
+                  <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
+                    <Title level={2} className='text-2xl text-title font-medium'>Chat</Title>
+                  </section>
+                  <section className='row-start-2 row-span-9 col-start-1 col-span-3 bg-mainColor flex flex-col'>
+                    <QueryContext.Provider value={{query, setQuery}}>
+                      <FriendsContext.Provider value={{friends}}>
+                        <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
+                          <MyFriends/>
+                        </ActivePartnerContext.Provider>
+                      </FriendsContext.Provider>
+                    </QueryContext.Provider>
+                  </section>
+                  <section className='px-10 py-5 row-start-2 row-span-9 col-start-4 col-span-6 flex flex-col bg-mainColor'>
+                    <ActivePartnerContext.Provider value={{activePartner}}>
+                      <FriendsContext.Provider value={{setFriends}}>
+                        <SendMessageContext.Provider value={sendMessage}>
+                          <MessagesContext.Provider value={{messages, setMessages}}>
+                            <ChatPanel/>
+                          </MessagesContext.Provider>
+                        </SendMessageContext.Provider>
+                      </FriendsContext.Provider>
+                    </ActivePartnerContext.Provider>
+                  </section>
+                </ChatPageContainer>
+              </main>
+            </GetFriendsContext.Provider>
           </OnlineIdsContext.Provider>
         </UserContext.Provider>
         

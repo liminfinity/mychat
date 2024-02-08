@@ -8,8 +8,13 @@ class AuthService {
         try {
             const user = await AuthDAL.logIn({email, password})
             if (!user) throw new Error(`user doesn't exist`)
-            user.avatar = createAvatarURL(user.avatar);
-            return user
+            
+            return {
+                id: user._id,
+                ...user._doc,
+                avatar: createAvatarURL(user.avatar),
+                _id: undefined
+            };
         } catch(e) {
             throw e
         } 

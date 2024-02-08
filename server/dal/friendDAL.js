@@ -6,6 +6,10 @@ const {DAL} = require('./DAL')
 const {Types} = require('mongoose')
 
 class FriendDAL extends DAL {
+    static async getRoom(userId, partnerId) {
+        const room = await roomModel.findOne({participants: {$all: [userId, partnerId]}});
+        return room
+    }
     static async getFreinds(userId, query) {
         try {
             const friends = []

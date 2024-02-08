@@ -14,7 +14,6 @@ export default function PenFriend({friend}) {
     const isOnline = onlineIds.has(friend.id);
     const username = getUsername(friend.firstName, friend.lastName);
     const notReadCnt = friend.notRead
-    console.log(notReadCnt)
 
     function handleClick() {
       setActivePartner(friend)

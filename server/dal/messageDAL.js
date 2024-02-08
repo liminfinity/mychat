@@ -5,9 +5,8 @@ const { DAL } = require("./DAL");
 
 
 class MessageDAL extends DAL {
-    static async getMessages(userId, partnerId) {
+    static async getMessages(room) {
         try {
-            const room = await roomModel.findOne({participants: {$all: [userId, partnerId]}});
             const messageIds = room.messages.map(id => new Types.ObjectId(id))
             const messages = await messageModel.find({_id: {$in: messageIds}})
             return messages;

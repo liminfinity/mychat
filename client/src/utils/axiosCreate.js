@@ -33,3 +33,11 @@ export const MessagesConnect = axios.create({
     },
     responseType: 'json'
 })
+
+export const UsersConnect = axios.create({
+    baseURL: `http://localhost:${SERVER_PORT}/chat/users`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    responseType: 'json'
+})

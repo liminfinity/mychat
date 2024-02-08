@@ -4,6 +4,7 @@ const {SocketController} = require('../controllers/socketController');
 const { OnlineController } = require('../controllers/onlineController');
 const { FriendController } = require('../controllers/friendController');
 const { MessageController } = require('../controllers/messageController');
+const { UserController } = require('../controllers/userController');
 const chatRouter = Router();
 
 chatRouter.route('/friends')
@@ -19,5 +20,8 @@ chatRouter.route('/messages')
 
 chatRouter.route('/online')
                 .get(OnlineController.getOnline)
+
+chatRouter.route('/users')
+                .get(UserController.getUsers)
 
 module.exports.chatRouter = chatRouter;

@@ -1,9 +1,12 @@
+const { FriendDAL } = require("../dal/friendDAL");
 const { MessageDAL } = require("../dal/messageDAL");
 
 class MessageService {
     static async getMessages(userId, partnerId) {
         try {
-           const messages = await MessageDAL.getMessages(userId, partnerId);
+           const room = await FriendDAL.getRoom(userId, partnerId)
+           if (!room) return []  
+           const messages = await MessageDAL.getMessages(room);
            await MessageDAL.readAllMessages(userId, partnerId);
            return messages.map(message => {
             return {

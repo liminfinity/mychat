@@ -149,7 +149,9 @@ export default function ChatPage() {
           <OnlineIdsContext.Provider value={{onlineIds}}>
             <GetFriendsContext.Provider value={getFriends}>
               <main className='flex flex-col h-screen'>
-                <ChatHeader/>
+                <ActivePartnerContext.Provider value={{setActivePartner}}>
+                  <ChatHeader/>
+                </ActivePartnerContext.Provider>
                 <ChatPageContainer>
                   <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
                     <Title level={2} className='text-2xl text-title font-medium'>Chat</Title>

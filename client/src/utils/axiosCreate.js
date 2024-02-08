@@ -17,3 +17,11 @@ export const OnlineConnect = axios.create({
     },
     responseType: 'json'
 })
+
+export const FriendsConnect = axios.create({
+    baseURL: `http://localhost:${SERVER_PORT}/chat/friends`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    responseType: 'json'
+})

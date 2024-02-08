@@ -1,20 +1,20 @@
 import { useContext, Fragment } from 'react'
-import { ActiveFriendContext } from '../../context/ChatContext'
+import { ActivePartnerContext } from '../../context/ChatContext'
 import PenFriendInfo from './penFriendInfo';
 import MessageForm from './sendMessage/messageForm';
 import DialogPanel from './dialogPanel';
 
 export default function ChatPanel() {
-    const activeFriend = useContext(ActiveFriendContext)
+    const {activePartner} = useContext(ActivePartnerContext)
     return (
         <>
-            {!activeFriend && (
+            {!activePartner && (
                 <div className='py-5 flex justify-center items-center'>
                     <span className='font-medium text-xl'>Select chat</span>
                 </div>
             )}
-            {activeFriend && (
-                <Fragment key={activeFriend.id}>
+            {activePartner && (
+                <Fragment key={activePartner.id}>
                     <PenFriendInfo/>
                     <DialogPanel/>
                     <MessageForm/>

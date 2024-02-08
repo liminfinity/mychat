@@ -2,27 +2,42 @@ import { useState, useRef, useEffect } from 'react'
 import {useLocation} from 'react-router-dom'
 import Title from '../common/Title';
 import MyFriends from './myPenFriends';
-import { FriendsContext, SetFriendsContext, UserContext, SetActiveFriendContext, ActiveFriendContext, SendMessageContext, MessagesContext, SetMessagesContext } from '../../context/ChatContext';
+import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, SetMessagesContext, OnlineIdsContext } from '../../context/ChatContext';
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
 import axios from 'axios';
 import ChatHeader from './chatHeader';
 import ChatPageContainer from './ChatPageContainer';
-import { OnlineConnect } from '../../utils/axiosCreate';
+import { FriendsConnect, OnlineConnect } from '../../utils/axiosCreate';
 import {useImmer} from 'use-immer'
 import {enableMapSet} from 'immer'
+import { QueryContext } from '../../context/CommonContext';
 
 enableMapSet()
 
 export default function ChatPage() {
     const [friends, setFriends] = useState([]);
     const [onlineIds, setOnlineIds] = useImmer(new Set()); 
-    const [activeFriend, setActiveFriend] = useState(null);
+    const [activePartner, setActivePartner] = useState(null);
     const [messages, setMessages] = useState([]);
+
+    const [query, setQuery] = useState('');
+
     const socket = useRef(null);
     const location = useLocation();
     const user = location.state.user;
     
+    async function getFriends() {
+      /* const queryParams = new URLSearchParams({userId: user.id, q: query}) */
+      const res = await FriendsConnect.get('/', {
+        params: {
+          userId: user.id,
+          q: query
+        }
+      })
+      return res.data.friends;
+    }
+
     useEffect(() => {
         socket.current = io('http://localhost:5000', {
             path: '/chat-io',
@@ -44,6 +59,21 @@ export default function ChatPage() {
         socket.current.removeAllListeners('connect')
       }
     }, [user])
+
+    useEffect(() => {
+        let ignore = false
+        async function getFrnds() {
+          const friendsData = await getFriends();
+          if (!ignore) {
+            setFriends(friendsData)
+          }
+        }
+        getFrnds()
+        return () => {
+          ignore = true
+        }
+  }, [query])
+
     /* useEffect(() => {
       socket.current.on('disconnect', async () => {
         await axios('http://localhost:5000/chat/sockets', {
@@ -116,8 +146,8 @@ export default function ChatPage() {
       })
     }
     return (
-      <div>Hi!
-        {/* <UserContext.Provider value={user}>
+        <UserContext.Provider value={user}>
+          <OnlineIdsContext.Provider value={{onlineIds}}>
             <main className='flex flex-col h-screen'>
               <ChatHeader/>
               <ChatPageContainer>
@@ -125,18 +155,16 @@ export default function ChatPage() {
                   <Title level={2} className='text-2xl text-title font-medium'>Chat</Title>
                 </section>
                 <section className='row-start-2 row-span-9 col-start-1 col-span-3 bg-mainColor flex flex-col'>
-                  <FriendsContext.Provider value={friends}>
-                      <SetFriendsContext.Provider value={setFriends}>
-                          <SetActiveFriendContext.Provider value={setActiveFriend}>
-                            <ActiveFriendContext.Provider value={activeFriend}>
-                              <MyFriends/>
-                            </ActiveFriendContext.Provider>
-                          </SetActiveFriendContext.Provider>
-                      </SetFriendsContext.Provider>
-                  </FriendsContext.Provider>
+                  <QueryContext.Provider value={{query, setQuery}}>
+                    <FriendsContext.Provider value={{friends}}>
+                      <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
+                        <MyFriends/>
+                      </ActivePartnerContext.Provider>
+                    </FriendsContext.Provider>
+                  </QueryContext.Provider>
                 </section>
                 <section className='px-10 py-5 row-start-2 row-span-9 col-start-4 col-span-6 flex flex-col bg-mainColor'>
-                  <ActiveFriendContext.Provider value={activeFriend}>
+                  <ActivePartnerContext.Provider value={{activePartner}}>
                     <SendMessageContext.Provider value={sendMessage}>
                       <MessagesContext.Provider value={messages}>
                         <SetMessagesContext.Provider value={setMessages}>
@@ -144,11 +172,12 @@ export default function ChatPage() {
                         </SetMessagesContext.Provider>
                       </MessagesContext.Provider>
                     </SendMessageContext.Provider>
-                  </ActiveFriendContext.Provider>
+                  </ActivePartnerContext.Provider>
                 </section>
               </ChatPageContainer>
             </main>
-        </UserContext.Provider> */}
-        </div>
+          </OnlineIdsContext.Provider>
+        </UserContext.Provider>
+        
     )
 }

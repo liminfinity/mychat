@@ -1,11 +1,12 @@
 const {Router} = require('express');
-const { chatGetFriends, chatSetSocket, chatDeleteSocket, chatGetMessages, chatSetMessages, chatGetSocket } = require('../controllers/chatController');
+const { chatGetMessages, chatSetMessages } = require('../controllers/chatController');
 const {SocketController} = require('../controllers/socketController');
 const { OnlineController } = require('../controllers/onlineController');
+const { FriendController } = require('../controllers/friendController');
 const chatRouter = Router();
 
 chatRouter.route('/friends')
-        .get(chatGetFriends)
+        .get(FriendController.getFriends)
 
 chatRouter.route('/sockets')
         .post(SocketController.setSocket)

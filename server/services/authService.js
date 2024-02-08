@@ -1,5 +1,6 @@
 const { AuthDAL } = require('../dal/authDAL');
-require('dotenv').config()
+const { createAvatarURL } = require('../utils/users');
+
 
 
 class AuthService {
@@ -7,7 +8,7 @@ class AuthService {
         try {
             const user = await AuthDAL.logIn({email, password})
             if (!user) throw new Error(`user doesn't exist`)
-            user.avatar = `http://localhost:${process.env.SERVER_PORT}/assets/img/${user.avatar}`;
+            user.avatar = createAvatarURL(user.avatar);
             return user
         } catch(e) {
             throw e

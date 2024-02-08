@@ -9,3 +9,7 @@ export function getDate(timestamp) {
     }
     return timeMessage
 }
+
+export function getUsername(fName, lName) {
+  return `${lName} ${fName}`
+}

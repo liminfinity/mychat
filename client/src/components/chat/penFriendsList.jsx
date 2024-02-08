@@ -3,12 +3,13 @@ import PenFriend from './penFriend'
 import { FriendsContext } from '../../context/ChatContext'
 
 export default function PenFriendsList() {
-  const friends = useContext(FriendsContext)
+  const {friends} = useContext(FriendsContext)
+  const frSorted = [...friends].sort((fr1, fr2) => new Date(fr1.lastMessage.timestamp) - new Date(fr2.lastMessage.timestamp))
   
   return (
     <ul className='overflow-y-auto overflow-x-hidden last:border-b-2'>
-      {friends.map(friend => {
-        return <PenFriend key={friend.id} friend={friend}/>
+      {frSorted.map(friend => {
+        return <PenFriend friend={friend} key={friend.id}/>
       })}
     </ul>
   )

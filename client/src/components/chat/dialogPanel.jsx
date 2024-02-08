@@ -1,17 +1,17 @@
 import { useContext, useEffect } from 'react'
-import { ActiveFriendContext, MessagesContext, SetMessagesContext, UserContext } from '../../context/ChatContext'
+import { ActivePartnerContext, MessagesContext, SetMessagesContext, UserContext } from '../../context/ChatContext'
 import axios from 'axios'
 import MessagePanel from './message/messagePanel'
 
 export default function DialogPanel() {
     const user = useContext(UserContext)
-    const friend = useContext(ActiveFriendContext)
+    const {activePartner} = useContext(ActivePartnerContext)
     const messages = useContext(MessagesContext)
     const setMessages = useContext(SetMessagesContext)
 
     useEffect(() => {
         async function getMessages() {
-            const queryParams = new URLSearchParams({userId: user.id, friendId: friend.id});
+            const queryParams = new URLSearchParams({userId: user.id, friendId: activePartner.id});
             const result = await axios(`http://localhost:5000/chat/messages?${queryParams}`);
             const messages = result.data.messages;
             setMessages(messages);

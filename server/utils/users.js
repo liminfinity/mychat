@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const USERS = [
     {
         id: 1,
@@ -114,4 +116,8 @@ function getUserByEmail(userEmail) {
     return user;
 }
 
-module.exports = {getUserById, getUserByEmail, getFriends, setSocket, deleteSocket, getMessages, setMessages, getSocket}
+function createAvatarURL(avatar) {
+    return `http://localhost:${process.env.SERVER_PORT}/assets/img/${avatar}`;
+}
+
+module.exports = {getUserById, getUserByEmail, getFriends, setSocket, deleteSocket, getMessages, setMessages, getSocket, createAvatarURL}

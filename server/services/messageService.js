@@ -19,6 +19,14 @@ class MessageService {
             throw e;
         }
     }
+    static async setMessage(message) {
+        try {
+           const messageId = await MessageDAL.setMessage(message)
+           return messageId
+        } catch(e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = {MessageService}

@@ -5,10 +5,9 @@ import MyFriends from './myPenFriends';
 import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, OnlineIdsContext, GetFriendsContext } from '../../context/ChatContext';
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
-import axios from 'axios';
 import ChatHeader from './chatHeader';
 import ChatPageContainer from './ChatPageContainer';
-import { FriendsConnect, OnlineConnect } from '../../utils/axiosCreate';
+import { FriendsConnect, MessagesConnect, OnlineConnect } from '../../utils/axiosCreate';
 import {useImmer} from 'use-immer'
 import {enableMapSet} from 'immer'
 import { QueryContext } from '../../context/CommonContext';
@@ -37,6 +36,19 @@ export default function ChatPage() {
       return res.data.friends;
     }
 
+    async function getMessages() {
+      console.log(3)
+      const res = await MessagesConnect.get('/', {
+          params: {
+              userId: user.id,
+              partnerId: activePartner.id
+          }
+      })
+      const {messages} = res.data;
+      setMessages(messages);
+      const friends = await getFriends();
+      setFriends(friends)
+    }
     useEffect(() => {
         socket.current = io('http://localhost:5000', {
             path: '/chat-io',
@@ -113,14 +125,23 @@ export default function ChatPage() {
         socket.current.removeAllListeners('USER:OFFLINE')
       }
     }, [])
+
     useEffect(() => {
-      socket.current.on('MESSAGE:GET', message => {
-        setMessages((prevMessages) => [...prevMessages, message]) 
+      socket.current.on('MESSAGE:GET', async message => {
+        if ([message.recipient, message.sender].includes(activePartner?.id)) {
+          console.log(1)
+          await getMessages()
+        }
+        else {
+          console.log(2)
+          const friends = await getFriends();
+          setFriends(friends)
+        }
       })
       return () => {
         socket.current.removeAllListeners('MESSAGE:GET')
       }
-    }, [])
+    }, [activePartner])
     async function sendMessage(content) {
       const message = {
         sender: user.id,
@@ -128,7 +149,13 @@ export default function ChatPage() {
         content,
         timestamp: new Date(),
       }
-      const result = await axios('http://localhost:5000/chat/messages', {
+      socket.current.emit('MESSAGE:SEND', message, ({status}) => {
+        if (status === 'delivered') {
+          console.log('Сообщение доставлено!')
+        }
+      })
+    }
+      /* const result = await axios('http://localhost:5000/chat/messages', {
           method: 'POST',
           data: JSON.stringify({message}),
           headers: {
@@ -143,7 +170,7 @@ export default function ChatPage() {
           console.log('Сообщение доставлено!')
         }
       })
-    }
+    } */
     return (
         <UserContext.Provider value={user}>
           <OnlineIdsContext.Provider value={{onlineIds}}>

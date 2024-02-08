@@ -10,6 +10,14 @@ const SocketsConnect = axios.create({
     responseType: 'json'
 })
 
-module.exports = {SocketsConnect}
+const MessagesConnect = axios.create({
+    baseURL: `http://localhost:${process.env?.SERVER_PORT || 5000}/chat/messages`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    responseType: 'json'
+})
+
+module.exports = {SocketsConnect, MessagesConnect}
 
 

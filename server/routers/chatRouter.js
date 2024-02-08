@@ -13,10 +13,11 @@ chatRouter.route('/friends')
 chatRouter.route('/sockets')
         .post(SocketController.setSocket)
         .delete(SocketController.deleteSocket)
+        .get(SocketController.getSockets)
 
 chatRouter.route('/messages')
         .get(MessageController.getMessages)
-        .post(chatSetMessages)
+        .post(MessageController.setMessage)
 
 chatRouter.route('/online')
                 .get(OnlineController.getOnline)

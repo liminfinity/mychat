@@ -1,5 +1,6 @@
 const { DAL } = require("./DAL")
-const { socketModel } = require('../schemas/socketSchema')
+const { socketModel } = require('../schemas/socketSchema');
+const { Types } = require("mongoose");
 
 
 class SocketDAL extends DAL {
@@ -17,6 +18,14 @@ class SocketDAL extends DAL {
             
             const {id} = await socketModel.create({userId, socketId})
             return id
+        } catch(e) {
+            throw e
+        } 
+    }
+    static async getSockets(recipientId) {
+        try {
+            const sockets = await socketModel.find({userId: new Types.ObjectId(recipientId)}).select('socketId')
+            return sockets.map(socket => socket.socketId)
         } catch(e) {
             throw e
         } 

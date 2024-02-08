@@ -20,6 +20,15 @@ class SocketService {
             throw e
         } 
     }
+    static async getSockets(recipientId) {
+        try {
+            
+            const sockets = await SocketDAL.getSockets(recipientId) 
+            return sockets
+        } catch(e) {
+            throw e
+        } 
+    }
 }
 
 module.exports = {SocketService}

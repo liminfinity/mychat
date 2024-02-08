@@ -4,7 +4,7 @@ import { FriendsContext } from '../../context/ChatContext'
 
 export default function PenFriendsList() {
   const {friends} = useContext(FriendsContext)
-  const frSorted = [...friends].sort((fr1, fr2) => new Date(fr1.lastMessage.timestamp) - new Date(fr2.lastMessage.timestamp))
+  const frSorted = [...friends].sort((fr1, fr2) => new Date(fr2.lastMessage.timestamp) - new Date(fr1.lastMessage.timestamp))
   
   return (
     <ul className='overflow-y-auto overflow-x-hidden last:border-b-2'>

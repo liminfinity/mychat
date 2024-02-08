@@ -1,5 +1,8 @@
 const { getFriendsService, setSocketService, deleteSocketService, getMessagesService, setMessagesService, getSocketService } = require("../services/chatService");
 
+
+
+
 function chatGetFriends(req, res) {
     try {
         const userId = +req.query?.userId;

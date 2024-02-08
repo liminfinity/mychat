@@ -1,34 +1,21 @@
 const { getUserByEmail } = require("../utils/users");
-const {connect, disconnect} = require('mongoose')
-const {userModel} = require('../schemas/userSchema')
+
+const {userModel} = require('../schemas/userSchema');
+const { DAL } = require("./DAL");
 require('dotenv').config()
 
 
-class AuthDAL {
-    static async connect() {
-        try {
-            await connect(process.env.MONGO_URL);
-        } catch(e) {
-            throw e
-        }
-    }
-    static async disconnect() {
-        try {
-            await disconnect()
-        } catch(e) {
-            throw e
-        }
-    }
+class AuthDAL extends DAL {
+    
     static async logIn({email, password}) {
         try {
             const users = await userModel.find({email, password});
             return users[0];
         } catch(e) {
-            throw e
-        }
+            throw e                                                                       
+        } 
     }
 }
-
 function loginDAL(log_user) {
     try {
         const user = getUserByEmail(log_user.email);

@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { ErrorContext, QueryContext } from '../../context/CommonContext';
+import { ErrorsContext, QueryContext } from '../../context/CommonContext';
 import AuthInput from './authInput';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import AuthButton from './authButton';
@@ -7,10 +7,10 @@ import { loginShema } from '../../validation/loginShema';
 import { AuthConnect } from '../../utils/axiosCreate';
 import {useNavigate} from 'react-router-dom';
 
-export default function AuthForm({isAnimate}) {
+export default function AuthForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const {error, setError} = useContext(ErrorContext);
+    const {setErrors} = useContext(ErrorsContext);
     const navigate = useNavigate();
     async function handleLogin(e) {
         e.preventDefault();
@@ -19,6 +19,8 @@ export default function AuthForm({isAnimate}) {
             const response = await AuthConnect.post('login', JSON.stringify({auth: login}));
             if (response.status === 200) {
                 const user = response.data;
+                user.id = user._id;
+                delete user._id
                 navigate('/chat', {
                     replace: true,
                     state: {
@@ -28,10 +30,24 @@ export default function AuthForm({isAnimate}) {
 
             } 
         } catch(e) {
-            if (!isAnimate) {
-                setError(e.name === 'ValidationError' ? e.errors[0] : e.message)
-            }
-            
+            let err = ''
+            setErrors((errs) => {
+                switch (e.name) {
+                    case 'ValidationError': {
+                        err = e.errors[0]
+                        break;
+                    }
+                    case 'AxiosError': {
+                        err = e.response?.data?.message ?? e.message;
+                        break;
+                    }
+                    default: {
+                        err = e.message
+                        break;
+                    }
+                }
+                errs.push(err)
+            })
         }
         
         

@@ -8,15 +8,21 @@ import ChatPanel from './chatPanel';
 import axios from 'axios';
 import ChatHeader from './chatHeader';
 import ChatPageContainer from './ChatPageContainer';
+import { OnlineConnect } from '../../utils/axiosCreate';
+import {useImmer} from 'use-immer'
+import {enableMapSet} from 'immer'
 
+enableMapSet()
 
 export default function ChatPage() {
     const [friends, setFriends] = useState([]);
+    const [onlineIds, setOnlineIds] = useImmer(new Set()); 
     const [activeFriend, setActiveFriend] = useState(null);
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState([]);
     const socket = useRef(null);
     const location = useLocation();
-    const user = location.state.user
+    const user = location.state.user;
+    
     useEffect(() => {
         socket.current = io('http://localhost:5000', {
             path: '/chat-io',
@@ -30,19 +36,15 @@ export default function ChatPage() {
     }, [])
     useEffect(() => {
       socket.current.on('connect', async () => {
-        await axios('http://localhost:5000/chat/sockets', {
-            method: 'POST',
-            data: JSON.stringify({userId: user.id, socketId: socket.current.id}),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-        })
+        const res = await OnlineConnect.get('/');
+        const {onlineIds} = res.data;
+        setOnlineIds(new Set(onlineIds.filter(id => id != user.id)))
       })
       return () => {
         socket.current.removeAllListeners('connect')
       }
-    }, [])
-    useEffect(() => {
+    }, [user])
+    /* useEffect(() => {
       socket.current.on('disconnect', async () => {
         await axios('http://localhost:5000/chat/sockets', {
             method: 'DELETE',
@@ -56,64 +58,32 @@ export default function ChatPage() {
       return () => {
         socket.current.removeAllListeners('disconnect')
       }
-    }, [])
+    }, []) */
     useEffect(() => {
       socket.current.on('USER:ONLINE', userId => {
-        const onlineFriend = friends.find(friend => friend.id === userId);
-        if (onlineFriend) {
-          setFriends((prevFriend) => {
-            const indexFriend = prevFriend.findIndex(friend => friend.id === userId);
-            return [
-              ...prevFriend.slice(0, indexFriend),
-              {
-                ...onlineFriend,
-                isOnline: true
-              },
-              ...prevFriend.slice(indexFriend + 1)
-            ]
+        if (user.id != userId) {
+          setOnlineIds((ids) => {
+            ids.add(userId)
           })
         }
       })
-    }, [friends])
+      return () => {
+        socket.current.removeAllListeners('USER:ONLINE')
+      }
+    }, [user])
+    
     useEffect(() => {
-      socket.current.on('USERS:ONLINE', onlineUsers => {
-        for (const userId of onlineUsers) {
-          const onlineFriend = friends.find(friend => friend.id === userId);
-          if (onlineFriend) {
-            setFriends((prevFriend) => {
-              const indexFriend = prevFriend.findIndex(friend => friend.id === userId);
-              console.log(indexFriend);
-              return [
-                ...prevFriend.slice(0, indexFriend),
-                {
-                  ...onlineFriend,
-                  isOnline: true
-                },
-                ...prevFriend.slice(indexFriend + 1)
-              ]
-            })
-          }
-        }
-      })
-    }, [friends])
-    useEffect(() => {
-      socket.current.on('USER:OFFLINE', userId => {
-        const offlineFriend = friends.find(friend => friend.id === userId);
-        if (offlineFriend) {
-          setFriends((prevFriend) => {
-            const indexFriend = prevFriend.findIndex(friend => friend.id === userId);
-            return [
-              ...prevFriend.slice(0, indexFriend),
-              {
-                ...offlineFriend,
-                isOnline: false
-              },
-              ...prevFriend.slice(indexFriend + 1)
-            ]
+      socket.current.on('USER:OFFLINE', ({userId, last}) => {
+        if (last) {
+          setOnlineIds((ids) => {
+            ids.delete(userId)
           })
         }
       })
-    }, [friends])
+      return () => {
+        socket.current.removeAllListeners('USER:OFFLINE')
+      }
+    }, [])
     useEffect(() => {
       socket.current.on('MESSAGE:GET', message => {
         setMessages((prevMessages) => [...prevMessages, message]) 
@@ -146,7 +116,8 @@ export default function ChatPage() {
       })
     }
     return (
-        <UserContext.Provider value={user}>
+      <div>Hi!
+        {/* <UserContext.Provider value={user}>
             <main className='flex flex-col h-screen'>
               <ChatHeader/>
               <ChatPageContainer>
@@ -177,6 +148,7 @@ export default function ChatPage() {
                 </section>
               </ChatPageContainer>
             </main>
-        </UserContext.Provider>
+        </UserContext.Provider> */}
+        </div>
     )
 }

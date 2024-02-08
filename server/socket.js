@@ -1,10 +1,17 @@
 const {Server} = require('socket.io');
-const axios = require('axios')
+const {SocketsConnect} = require('./utils/axiosCreate')
 
-async function getOnlineUsers() {
-    const result = await axios('http://localhost:5000/chat/sockets');
-    const onlineUsers = result.data.onlineUsers;
-    return onlineUsers
+
+async function setSocket(userId, socketId) {
+    const res = await SocketsConnect.post('/', JSON.stringify({userId, socketId}))
+    return res.data.id
+}
+
+async function deleteSocket(userId, socketId) {
+    const res = await SocketsConnect.delete('/', {
+        data: JSON.stringify({userId, socketId})
+    })
+    return res.data.last
 }
 
 module.exports.listen = (app) => {
@@ -15,35 +22,43 @@ module.exports.listen = (app) => {
         path: '/chat-io'
     })
     io.sockets.on('connection', async socket => {
-        /* socket.disconnect() */
-        const user = JSON.parse(socket.handshake.query?.user);
-        socket.broadcast.emit('USER:ONLINE', user.id);
-        const onlineUsers = await getOnlineUsers();
-        socket.emit('USERS:ONLINE', onlineUsers)
-        socket.on('disconnect', reason => {
-            socket.broadcast.emit('USER:OFFLINE', user.id);
-            console.log('goodbye!')
-        })
-        socket.on('MESSAGE:SEND', async (message, cb) => {
-            
-            const queryParams1 = new URLSearchParams({userId: message.sender})
-            const queryParams2 = new URLSearchParams({userId: message.recipient})
-            const newMessage = {
-                ...message,
-                recipient: undefined
-            }
+        try {
+            /* socket.disconnect() */
+            const user = JSON.parse(socket.handshake.query?.user);
 
-            const resultSender = await axios(`http://localhost:5000/chat/sockets?${queryParams1}`)
-            const resultRecipient = await axios(`http://localhost:5000/chat/sockets?${queryParams2}`)
-            if (resultSender.status && resultRecipient.status) {
-                const senderSocket = resultSender.data.socket;
-                const recipientSocket = resultRecipient.data.socket;
-                io.to(senderSocket).to(recipientSocket).emit('MESSAGE:GET', newMessage);
+            const id = await setSocket(user.id, socket.id);
+            socket.broadcast.emit('USER:ONLINE', user.id);
 
-            }
-            cb({status: 'delivered'})
 
-        })
+            socket.on('disconnect', async reason => {
+                const last = await deleteSocket(user.id, socket.id);
+                socket.broadcast.emit('USER:OFFLINE', {userId: user.id, last});
+                console.log('goodbye!')
+            })
+            /* socket.on('MESSAGE:SEND', async (message, cb) => {
+                
+                const queryParams1 = new URLSearchParams({userId: message.sender})
+                const queryParams2 = new URLSearchParams({userId: message.recipient})
+                const newMessage = {
+                    ...message,
+                    recipient: undefined
+                }
+
+                const resultSender = await axios(`http://localhost:5000/chat/sockets?${queryParams1}`)
+                const resultRecipient = await axios(`http://localhost:5000/chat/sockets?${queryParams2}`)
+                if (resultSender.status && resultRecipient.status) {
+                    const senderSocket = resultSender.data.socket;
+                    const recipientSocket = resultRecipient.data.socket;
+                    io.to(senderSocket).to(recipientSocket).emit('MESSAGE:GET', newMessage);
+
+                }
+                cb({status: 'delivered'})
+
+            }) */
+        } catch(e) {
+            console.log(e)
+        }
+        
     })
     return io;
 }

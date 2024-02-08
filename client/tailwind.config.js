@@ -31,18 +31,21 @@ export default {
       keyframes: {
         error: {
           "0%": {
-            transform: "translate(-100%)"
+            transform: "translateY(-125%)",
+            opacity: 0
           },
           "50%": {
-            transform: "translate(20%)"
+            transform: "translateY(0)",
+            opacity: 1
           },
           "100%": {
-            transform: "translate(-120%)"
+            transform: "translateY(0)",
+            opacity: 0
           }
         }
       },
       animation: {
-        openError: "error 10s ease-out forwards"
+        openError: "error 6s cubic-bezier(.07,.14,.14,.99) forwards"
       }
 
     },

@@ -23,7 +23,8 @@ const userShema = new Schema({
         type: Array
     }
 }, {
-    collection: 'users'
+    collection: 'users',
+    versionKey: false
 })
 const userModel = model('User', userShema)
 module.exports = {userModel}

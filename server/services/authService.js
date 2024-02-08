@@ -5,16 +5,13 @@ require('dotenv').config()
 class AuthService {
     static async logIn({email, password}) {
         try {
-            await AuthDAL.connect();
             const user = await AuthDAL.logIn({email, password})
             if (!user) throw new Error(`user doesn't exist`)
             user.avatar = `http://localhost:${process.env.SERVER_PORT}/assets/img/${user.avatar}`;
             return user
         } catch(e) {
             throw e
-        } finally {
-            await AuthDAL.disconnect();
-        }
+        } 
         
     }
 }

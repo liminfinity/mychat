@@ -9,3 +9,11 @@ export const AuthConnect = axios.create({
     },
     responseType: 'json'
 })
+
+export const OnlineConnect = axios.create({
+    baseURL: `http://localhost:${SERVER_PORT}/chat/online`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    responseType: 'json'
+})

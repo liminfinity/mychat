@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import UsersContainer from "./usersContainer";
 import { UsersConnect } from "../../utils/axiosCreate";
 import { UserContext } from "../../context/ChatContext";
+import ToolsPanel from "./tools/toolsPanel";
 
 export default function ChatHeader() {
   const [query, setQuery] = useState('');
@@ -29,12 +30,12 @@ export default function ChatHeader() {
 
   return (
     <QueryContext.Provider value={{query, setQuery}}>
-      <header className='py-3 px-12 flex items-center justify-between gap-40'>
+      <header className='py-3 px-12 flex items-center gap-8'>
         <SearchForm openModal={setFocus} className='relative flex-grow' placeholder='Search'>
           {isFocus && <UsersContainer users={users}/>}
         </SearchForm>
         <ProfilePanel/>
-        
+        <ToolsPanel/>
       </header>
     </QueryContext.Provider>
   )

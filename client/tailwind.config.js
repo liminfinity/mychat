@@ -43,10 +43,19 @@ export default {
             transform: "translateY(0)",
             opacity: 0
           }
+        },
+        open: {
+          "0%": {
+            opacity: 0
+          },
+          "100%": {
+            opacity: 1
+          }
         }
       },
       animation: {
-        openError: "error 6s cubic-bezier(.07,.14,.14,.99) forwards"
+        openError: "error 6s cubic-bezier(.07,.14,.14,.99) forwards",
+        openModal: 'open 1s cubic-bezier(.07,.14,.14,.99) forwards'
       }
 
     },

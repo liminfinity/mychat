@@ -17,6 +17,9 @@
 .error {
     @apply py-3 px-7 rounded-xl bg-error text-mainColor text-center
 }
+.caret {
+    @apply text-sendMessage cursor-pointer transition-all
+}
 
 @tailwind utilities;
 *,

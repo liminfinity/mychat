@@ -20,6 +20,15 @@ class UserDAL extends DAL {
             throw e                                                                       
         } 
     }
+    static async editUser(editedUser) {
+        try {
+            
+            const {modifiedCount} = await userModel.updateOne({_id: editedUser.id}, {...editedUser, id: undefined})
+            return modifiedCount
+        } catch(e) {
+            throw e                                                                       
+        } 
+    }
 }
 
 module.exports = {UserDAL}

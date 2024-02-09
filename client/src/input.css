@@ -20,6 +20,14 @@
 .caret {
     @apply text-sendMessage cursor-pointer transition-all
 }
+.photo {
+    @apply bg-sendMessage text-mainColor rounded-full p-2 w-4 cursor-pointer transition-all hover:bg-sendMessageHover
+}
+.photoInput {
+    @apply button py-2 px-4 w-full text-start hover:shadow-activeUser
+}
+
+
 
 @tailwind utilities;
 *,
@@ -47,6 +55,12 @@ body {
 }
 .glass {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.37);
+}
+.whiteGlass {
+    background: #FFF;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.37);

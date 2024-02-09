@@ -23,5 +23,5 @@ chatRouter.route('/online')
 
 chatRouter.route('/users')
                 .get(UserController.getUsers)
-
-module.exports.chatRouter = chatRouter;
+                
+module.exports = {chatRouter};

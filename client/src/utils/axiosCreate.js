@@ -41,3 +41,11 @@ export const UsersConnect = axios.create({
     },
     responseType: 'json'
 })
+
+export const UserConnect = axios.create({
+    baseURL: `http://localhost:${SERVER_PORT}/user`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    responseType: 'json'
+})

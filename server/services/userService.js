@@ -1,5 +1,5 @@
 const { UserDAL } = require("../dal/userDAL");
-const { createAvatarURL } = require("../utils/users");
+const { createAvatarURL, getRelativeAvatarURL } = require("../utils/users");
 
 class UserService {
     static async getUsers(userId, query = '') {
@@ -18,6 +18,18 @@ class UserService {
         } catch(e) {
             throw e;
         }
+    }
+    static async editUser(editedUser) {
+        try {
+            const copyEditedUser = {...editedUser, avatar: getRelativeAvatarURL(editedUser?.avatar)}
+            
+            const cnt = await UserDAL.editUser(copyEditedUser)
+            if (!cnt) throw new Error(`user doesn't updated`)
+            return editedUser;
+        } catch(e) {
+            throw e
+        } 
+        
     }
 }
 

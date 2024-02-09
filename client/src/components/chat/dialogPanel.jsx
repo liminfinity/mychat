@@ -12,7 +12,6 @@ export default function DialogPanel() {
     const listRef = useRef(null)
     useEffect(() => {
         async function getMessages() {
-            console.log(4)
             const res = await MessagesConnect.get('/', {
                 params: {
                     userId: user.id,

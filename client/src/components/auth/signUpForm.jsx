@@ -3,9 +3,9 @@ import { ErrorsContext, QueryContext } from '../../context/CommonContext';
 import AuthInput from './authInput';
 import { faAddressCard, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import AuthButton from './authButton';
-import { loginShema, signUpShema } from '../../validation/authShema';
+import {signUpShema } from '../../validation/authShema';
 import { AuthConnect } from '../../utils/axiosCreate';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import { useImmer } from 'use-immer';
 
 export default function SignUpForm() {

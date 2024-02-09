@@ -55,7 +55,7 @@ export default {
       },
       animation: {
         openError: "error 6s cubic-bezier(.07,.14,.14,.99) forwards",
-        openModal: 'open 1s cubic-bezier(.07,.14,.14,.99) forwards'
+        openModal: 'open .5s cubic-bezier(.07,.14,.14,.99) forwards'
       }
 
     },

@@ -18,9 +18,6 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String
-    },
-    rooms: {
-        type: Array
     }
 }, {
     collection: 'users',

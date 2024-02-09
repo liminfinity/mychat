@@ -28,7 +28,6 @@ class FriendDAL extends DAL {
                         _id: undefined,
                         password: undefined,
                         avatar: createAvatarURL(friend.avatar),
-                        rooms: undefined,
                         lastMessage: messages[messages.length - 1],
                         notRead,
                     })

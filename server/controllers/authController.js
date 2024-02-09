@@ -11,6 +11,16 @@ class AuthController {
             res.status(404).json({message: e.message})
         }
     }
+    static async signUp(req, res) {
+        try {
+            const {newUser} = req.body;
+            if (!newUser) throw new Error("data of new user haven't been gotten");
+            const user = await AuthService.signUp(newUser);
+            res.status(200).json(user);
+        } catch(e) {
+            res.status(404).json({message: e.message})
+        }
+    }
 }
 
 function loginController(req, res) {

@@ -4,7 +4,7 @@ const { createAvatarURL } = require("../utils/users");
 class UserService {
     static async getUsers(userId, query = '') {
         try {
-           const users = await UserDAL.getUsers(userId, query);
+           const users = await UserDAL.getUsers(userId, query.toLowerCase().trim());
            return users.map(user => {
             return {
                 id: user._id,
@@ -12,7 +12,6 @@ class UserService {
                 _id: undefined,
                 email: undefined,
                 password: undefined,
-                rooms: undefined,
                 avatar: createAvatarURL(user.avatar)
             }
            });

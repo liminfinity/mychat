@@ -20,15 +20,21 @@ class AuthService {
         } 
         
     }
-}
-
-function loginService(user) {
-    try {
-       const result = loginDAL(user);
-       return {user: result};
-
-    } catch(e) {
-        throw e;
+    static async signUp(newUser) {
+        try {
+            const userId = await AuthDAL.signUp(newUser)
+            if (!userId) throw new Error(`user doesn't saved`)
+            
+            return {
+                id: userId,
+                ...newUser,
+                avatar: createAvatarURL(),
+            };
+        } catch(e) {
+            throw e
+        } 
+        
     }
 }
+
 module.exports = {AuthService}

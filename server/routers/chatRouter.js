@@ -1,5 +1,4 @@
 const {Router} = require('express');
-const { chatSetMessages } = require('../controllers/chatController');
 const {SocketController} = require('../controllers/socketController');
 const { OnlineController } = require('../controllers/onlineController');
 const { FriendController } = require('../controllers/friendController');

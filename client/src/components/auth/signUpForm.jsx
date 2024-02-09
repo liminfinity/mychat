@@ -1,25 +1,28 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { ErrorsContext, QueryContext } from '../../context/CommonContext';
 import AuthInput from './authInput';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faAddressCard, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import AuthButton from './authButton';
-import { loginShema } from '../../validation/authShema';
+import { loginShema, signUpShema } from '../../validation/authShema';
 import { AuthConnect } from '../../utils/axiosCreate';
-import {useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { useImmer } from 'use-immer';
 
-export default function LoginForm() {
+export default function SignUpForm() {
     const [form, setForm] = useImmer({
+        firstName: '',
+        lastName: '',
         email: '',
-        password: ''
-    })
+        password: '',
+        confirmPassword: ''
+    }) 
     const {setErrors} = useContext(ErrorsContext);
     const navigate = useNavigate();
-    async function handleLogin(e) {
+    async function handleSignUp(e) {
         e.preventDefault();
         try {
-            const login = await loginShema.validate(form);
-            const response = await AuthConnect.post('login', JSON.stringify({auth: login}));
+            const newUser = await signUpShema.validate(form);
+            const response = await AuthConnect.post('signup', JSON.stringify({newUser: {...newUser, confirmPassword: undefined}}));
             if (response.status === 200) {
                 const user = response.data;
                 navigate('/chat', {
@@ -54,12 +57,15 @@ export default function LoginForm() {
         
     }
     return (
-        <form onSubmit={handleLogin} className='flex flex-col justify-center items-center gap-6'>
+        <form onSubmit={handleSignUp} className='flex flex-col justify-center items-center gap-6'>
             <QueryContext.Provider value={{ form: form, setForm: setForm }}>
+                <AuthInput name='lastName' placeholder='Last name' type='text' icon={faAddressCard} />
+                <AuthInput name='firstName' placeholder='First name' type='text' icon={faAddressCard} />
                 <AuthInput name='email' placeholder='Email' type='email' icon={faEnvelope} />
                 <AuthInput name='password' placeholder='Password' type='password' icon={faLock} />
+                <AuthInput name='confirmPassword' placeholder='Confirm password' type='password' icon={faLock} />
             </QueryContext.Provider>
-            <AuthButton>Log in</AuthButton>
+            <AuthButton>Sign up</AuthButton>
         </form>
     )
 }

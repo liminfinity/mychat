@@ -17,7 +17,7 @@ class UserController {
             const {editedUser} = req.body;
             if (!editedUser) throw new Error("data of new user haven't been gotten");
             const user = await UserService.editUser(editedUser);
-            res.status(200).json(user);
+            res.status(200).json({user});
         } catch(e) {
             res.status(404).json({message: e.message})
         }

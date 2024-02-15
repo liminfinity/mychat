@@ -10,7 +10,7 @@ require('dotenv').config()
 
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json());
+app.use(express.json({limit: '40mb'}));
 app.use('/assets/img', express.static(path.resolve('assets/userAvatars')))
 app.use(cors({
     origin: '*'

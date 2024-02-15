@@ -3,7 +3,7 @@
 @tailwind components;
 
 .avatar {
-    @apply rounded-full w-14;
+    @apply rounded-full w-14 aspect-square;
 }
 .message {
     @apply py-3 px-6 bg-myMessage rounded-2xl break-all

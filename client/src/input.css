@@ -6,7 +6,7 @@
     @apply rounded-full w-14 aspect-square;
 }
 .message {
-    @apply py-3 px-6 bg-myMessage rounded-2xl break-all
+    @apply py-2 px-4 bg-myMessage rounded-2xl break-all
 }
 .button {
     @apply cursor-pointer rounded-md transition-all focus:outline-sendMessage
@@ -26,7 +26,6 @@
 .photoInput {
     @apply button py-2 px-4 w-full text-start hover:shadow-activeUser
 }
-
 
 
 @tailwind utilities;
@@ -65,3 +64,34 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.37);
 }
+
+.scrollGlass::-webkit-scrollbar {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+}
+
+.scrollGlass::-webkit-scrollbar-track {
+    margin-bottom: 5px;
+}
+.emojiPicker {
+    position: absolute!important;
+    right: 0;
+    bottom: 100%;
+    max-width: 330px;
+    max-height: 330px;
+
+}
+@media (max-width: 720px) {
+    .emojiPicker {
+        right: -200%;
+        max-width: 280px;
+        max-height: 280px;
+    }
+}
+@media (max-width: 450px) {
+    .emojiPicker {
+        right: -500%;
+        max-width: 280px;
+        max-height: 280px;
+    }
+}
+

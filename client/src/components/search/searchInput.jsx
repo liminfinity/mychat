@@ -13,7 +13,7 @@ export default function SearchInput({placeholder, setFocus, openModal}) {
       }} onBlur={() => {
         setFocus(false)
         setTimeout(() => openModal && openModal(false), 200)
-      }} className='flex-grow outline-none' type="search" placeholder={placeholder} value={query} onChange={(e) => setQuery(e.target.value)}/>
+      }} className='flex-grow w-full outline-none ' type="search" placeholder={placeholder} value={query} onChange={(e) => setQuery(e.target.value)}/>
     </>
   )
 }

@@ -10,3 +10,5 @@ export const GetFriendsContext = createContext(null);
 export const MessagesContext = createContext({});
 
 export const SpeakingContext = createContext({});
+
+export const MobileChatContext = createContext({});

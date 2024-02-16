@@ -40,14 +40,14 @@ export default function MessageForm() {
   return (
     <QueryContext.Provider value={{message, setMessage}}>
       <SpeakingContext.Provider value={{isSpeaking, setSpeaking}}>
-        <form onSubmit={handleSubmit} className='pt-3 flex gap-4 items-center border-t-2 bg-mainColor'>
+        <form onSubmit={handleSubmit} className='pt-3 flex px-2 910:px-0 gap-3 910:gap-4 items-center border-t-2 bg-mainColor'>
             <label className='flex-grow'>
               <MessageInput className=' w-full' placeholder='Type a message'/>
             </label>
             <SpeechButton/>
             <div className='relative flex justify-center items-center' ref={smilePicker}>
               <FontAwesomeIcon className='w-6 h-6 cursor-pointer transition-all hover:text-sendMessage' icon={faSmile} onClick={() => setOpenEmoji(!isOpenEmoji)}/>
-              {isOpenEmoji && <EmojiPicker style={{position: 'absolute', right: 0, bottom: '100%', maxWidth: '350px', maxHeight: '350px' }} onEmojiClick={handleEmojiClick}/>}
+              {isOpenEmoji && <EmojiPicker className='emojiPicker' onEmojiClick={handleEmojiClick}/>}
             </div>
             <MessageButton>Send <FontAwesomeIcon icon={faLocationArrow}/></MessageButton>
           </form>

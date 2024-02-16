@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
 export default {
   content: [
     "./src/**/*.{jsx, tsx, js, ts}"
@@ -12,6 +13,7 @@ export default {
         text_color_main: '#9ea1b7',
         sendMessage: '#4694f9',
         sendMessageHover: '#428ae8',
+        sendMessageDisabled: '#428ae886',
         mainColor: '#FFF',
         secondColor: '#f5f6fa',
         onlineStatus: '#48d984',
@@ -19,6 +21,7 @@ export default {
         text_color_myName: '#79b0fa',
         error: '#ea5656'
       },
+      
       transitionDuration: {
         DEFAULT: '.5s'
       },
@@ -28,6 +31,9 @@ export default {
       boxShadow: {
         activeFriend: 'inset 0px 2px 25px 5px rgba(158, 161, 183, 0.15)',
         activeUser: 'inset 0px 2px 25px 5px rgba(158, 161, 183, 0.3)'
+      },
+      height: {
+        "71": '17rem' 
       },
       keyframes: {
         error: {
@@ -67,6 +73,15 @@ export default {
         recordingSpeech: 'recording 1.5s infinite cubic-bezier(.44,.12,.34,1.02) alternate'
       }
 
+    },
+    screens: {
+      ...defaultTheme.screens,
+      '550': '550px',
+      '910': '910px',
+      '970': '970px',
+      '870': '870px',
+      '800': '800px',
+      '1100': '1100px',
     },
   },
   plugins: [],

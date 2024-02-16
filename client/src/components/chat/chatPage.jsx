@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {useLocation} from 'react-router-dom'
 import Title from '../common/Title';
 import MyFriends from './myPenFriends';
-import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, OnlineIdsContext, GetFriendsContext } from '../../context/ChatContext';
+import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, OnlineIdsContext, GetFriendsContext, MobileChatContext } from '../../context/ChatContext';
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
 import ChatHeader from './chatHeader';
@@ -19,13 +19,22 @@ export default function ChatPage() {
     const [onlineIds, setOnlineIds] = useImmer(new Set()); 
     const [activePartner, setActivePartner] = useState(null);
     const [messages, setMessages] = useState([]);
-
+    const [isMobileChatOpen, setMobileChatOpen] = useState(false);
+    const [WinWidth, setWinWidth] = useState(innerWidth);
     const [query, setQuery] = useState('');
-
+    const isMobile = WinWidth < 550;
     const socket = useRef(null);
     const location = useLocation();
     const user = location.state.user;
-    
+    function handleResize()  {
+      setWinWidth(innerWidth);
+    }
+    useEffect(() => {
+      window.addEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
     async function getFriends() {
       const res = await FriendsConnect.get('/', {
         params: {
@@ -172,42 +181,42 @@ export default function ChatPage() {
       })
     } */
     return (
+      <MobileChatContext.Provider value={{isMobileChatOpen, setMobileChatOpen, isMobile}}>
         <UserContext.Provider value={user}>
           <OnlineIdsContext.Provider value={{onlineIds}}>
             <GetFriendsContext.Provider value={getFriends}>
-              <main className='flex flex-col h-screen'>
-                <ActivePartnerContext.Provider value={{setActivePartner}}>
+              <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
+                <main className='flex flex-col h-screen'>
                   <ChatHeader/>
-                </ActivePartnerContext.Provider>
-                <ChatPageContainer>
-                  <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
-                    <Title level={2} className='text-2xl text-title font-medium'>Chat</Title>
-                  </section>
-                  <section className='row-start-2 row-span-9 col-start-1 col-span-3 bg-mainColor flex flex-col'>
-                    <QueryContext.Provider value={{query, setQuery}}>
-                      <FriendsContext.Provider value={{friends}}>
-                        <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
-                          <MyFriends/>
-                        </ActivePartnerContext.Provider>
-                      </FriendsContext.Provider>
-                    </QueryContext.Provider>
-                  </section>
-                  <section className='px-10 py-5 row-start-2 row-span-9 col-start-4 col-span-6 flex flex-col bg-mainColor'>
-                    <ActivePartnerContext.Provider value={{activePartner}}>
-                      <FriendsContext.Provider value={{setFriends}}>
-                        <SendMessageContext.Provider value={sendMessage}>
-                          <MessagesContext.Provider value={{messages, setMessages}}>
-                            <ChatPanel/>
-                          </MessagesContext.Provider>
-                        </SendMessageContext.Provider>
-                      </FriendsContext.Provider>
-                    </ActivePartnerContext.Provider>
-                  </section>
-                </ChatPageContainer>
-              </main>
+                  <ChatPageContainer>
+                    <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
+                      <Title level={2} className='text-xl sm:text-2xl text-title font-medium'>Chat</Title>
+                    </section>
+                    <section className={'row-start-2 row-span-9 col-start-1 col-span-9 ' +
+                    '550:col-span-2 800:col-span-3 bg-mainColor flex flex-col ' + (isMobileChatOpen && isMobile ? 'hidden' : '')}>
+                      <QueryContext.Provider value={{query, setQuery}}>
+                        <FriendsContext.Provider value={{friends}}>
+                            <MyFriends/>
+                        </FriendsContext.Provider>
+                      </QueryContext.Provider>
+                    </section>
+                    <section className={' px-2 910:px-10 py-5 row-start-2 row-span-9 ' +
+                    'col-start-1 col-span-9 550:col-start-3 550:col-span-7 800:col-start-4 800:col-span-6 ' +
+                      '550:flex flex-col bg-mainColor ' + (isMobileChatOpen && isMobile ? 'flex' : 'hidden')}>
+                        <FriendsContext.Provider value={{setFriends}}>
+                          <SendMessageContext.Provider value={sendMessage}>
+                            <MessagesContext.Provider value={{messages, setMessages}}>
+                              <ChatPanel/>
+                            </MessagesContext.Provider>
+                          </SendMessageContext.Provider>
+                        </FriendsContext.Provider>
+                    </section>
+                  </ChatPageContainer>
+                </main>
+              </ActivePartnerContext.Provider>
             </GetFriendsContext.Provider>
           </OnlineIdsContext.Provider>
         </UserContext.Provider>
-        
+      </MobileChatContext.Provider>
     )
 }

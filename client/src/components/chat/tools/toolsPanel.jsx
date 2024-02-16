@@ -22,7 +22,7 @@ export default function ToolsPanel() {
   }, []) 
 
   return (
-    <div className='relative' ref={modalRef}>
+    <div className='relative z-50' ref={modalRef}>
         <FontAwesomeIcon onClick={() => setOpen(!isOpen)} icon={faAngleDown} className={'caret' + (isOpen ? ' rotate-180' : '') }/>
         {isOpen && <ul className='absolute w-48 mt-8 right-0 glass flex flex-col py-2 px-3 rounded-xl animate-openModal'>
             <LinkContainer>

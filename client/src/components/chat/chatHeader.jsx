@@ -30,7 +30,7 @@ export default function ChatHeader() {
 
   return (
     <QueryContext.Provider value={{query, setQuery}}>
-      <header className='py-3 px-12 flex items-center gap-5'>
+      <header className='py-3 px-2 sm:px-3 md:px-5 lg:px-9 xl:px-12 flex items-center gap-2 sm:gap-5'>
         <SearchForm openModal={setFocus} className='relative flex-grow' placeholder='Search'>
           {isFocus && <UsersContainer users={users}/>}
         </SearchForm>

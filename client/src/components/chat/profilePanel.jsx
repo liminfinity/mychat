@@ -6,7 +6,7 @@ export default function ProfilePanel() {
 
     return (
         <div className='flex justify-center items-center gap-4'>
-            <span>Hello, <span className='text-text_color_myName font-medium'>{user.firstName}</span></span>
+            <span className='hidden sm:inline'>Hello, <span className='text-text_color_myName font-medium'>{user.firstName}</span></span>
             <Avatar src={user.avatar}/>
         </div>
     )

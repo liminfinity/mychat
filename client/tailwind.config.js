@@ -51,11 +51,20 @@ export default {
           "100%": {
             opacity: 1
           }
+        },
+        recording: {
+          "0%": {
+            transform: "scale(1)"
+          },
+          "100%": {
+            transform:"scale(1.3)",
+          }
         }
       },
       animation: {
         openError: "error 6s cubic-bezier(.07,.14,.14,.99) forwards",
-        openModal: 'open .5s cubic-bezier(.07,.14,.14,.99) forwards'
+        openModal: 'open .5s cubic-bezier(.07,.14,.14,.99) forwards',
+        recordingSpeech: 'recording 1.5s infinite cubic-bezier(.44,.12,.34,1.02) alternate'
       }
 
     },

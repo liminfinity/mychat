@@ -22,7 +22,6 @@ class UserDAL extends DAL {
     }
     static async editUser(editedUser) {
         try {
-            
             const {modifiedCount} = await userModel.updateOne({_id: editedUser.id}, {...editedUser, id: undefined})
             return modifiedCount
         } catch(e) {

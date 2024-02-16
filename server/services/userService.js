@@ -21,23 +21,19 @@ class UserService {
     }
     static async editUser(editedUser) {
         try {
-            const correctEditedUser = {...editedUser, avatar: `${editedUser.id}=${Math.random()}.png`, avatarBuffer: undefined}
+            const hasBuffer = editedUser.avatarBuffer.length
             const relAvatar = getRelativeAvatarURL(editedUser.avatar)
-            if (relAvatar != 'unknown.png') {
+            const correctEditedUser = {...editedUser, avatar: hasBuffer ? `${editedUser.id}=${Math.random()}.png` : relAvatar, avatarBuffer: undefined};
+            const isUnknownAvatar = relAvatar === 'unknown.png';
+            if (!isUnknownAvatar && hasBuffer) {
                 fs.unlinkSync(`assets\\userAvatars\\${relAvatar}`);
             }
             const urlToImg = `assets\\userAvatars\\${correctEditedUser.avatar}`;
-            if (editedUser.avatarBuffer.length) {
+            if (hasBuffer) {
                 fs.writeFileSync(urlToImg, Buffer.from(new Uint8Array(editedUser.avatarBuffer)));
-                await UserDAL.editUser(correctEditedUser)
-                return {...correctEditedUser, avatar: createAvatarURL(correctEditedUser.avatar)}; 
-                
             }
-            else {
-                const cnt = await UserDAL.editUser(correctEditedUser)
-                if (!cnt) throw new Error(`user doesn't updated`)
-                return {...correctEditedUser, avatar: createAvatarURL(correctEditedUser.avatar)};
-            }
+            await UserDAL.editUser(correctEditedUser)
+            return {...correctEditedUser, avatar: createAvatarURL(correctEditedUser.avatar)}; 
         } catch(e) {
             throw e
         }

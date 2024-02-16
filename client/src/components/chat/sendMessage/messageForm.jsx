@@ -2,22 +2,28 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import MessageInput from './messageInput'
 import MessageButton from './messageButton'
 import { QueryContext } from '../../../context/CommonContext';
-import { SendMessageContext } from '../../../context/ChatContext';
+import { SendMessageContext, SpeakingContext } from '../../../context/ChatContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import EmojiPicker from 'emoji-picker-react'
 import { faSmile } from '@fortawesome/free-regular-svg-icons';
+import SpeechButton from './speechButton';
 
 export default function MessageForm() {
   const [message, setMessage] = useState('');
   const [isOpenEmoji, setOpenEmoji] = useState(false);
+  const [isSpeaking, setSpeaking] = useState(false);
   const sendMessage = useContext(SendMessageContext);
-  const smilePicker = useRef(null)
+  const smilePicker = useRef(null);
 
   function handleSubmit(e) {
     e.preventDefault();
-    sendMessage(message)
-    setMessage('')
+    if (message) {
+      sendMessage(message);
+      setSpeaking(false);
+      setMessage('');
+    }
+    
   }
   function handleEmojiClick({emoji}) {
     setMessage(message + emoji)
@@ -33,16 +39,19 @@ export default function MessageForm() {
   }, []) 
   return (
     <QueryContext.Provider value={{message, setMessage}}>
+      <SpeakingContext.Provider value={{isSpeaking, setSpeaking}}>
         <form onSubmit={handleSubmit} className='pt-3 flex gap-4 items-center border-t-2 bg-mainColor'>
-          <label className='flex-grow'>
-            <MessageInput className=' w-full' placeholder='Type a message'/>
-          </label>
-          <div className='relative' ref={smilePicker}>
-            <FontAwesomeIcon className='w-6 h-6 cursor-pointer transition-all hover:text-sendMessage' icon={faSmile} onClick={() => setOpenEmoji(!isOpenEmoji)}/>
-            {isOpenEmoji && <EmojiPicker style={{position: 'absolute', right: 0, bottom: 0, maxWidth: '350px', maxHeight: '350px' }} onEmojiClick={handleEmojiClick}/>}
-          </div>
-          <MessageButton>Send <FontAwesomeIcon icon={faLocationArrow}/></MessageButton>
-        </form>
+            <label className='flex-grow'>
+              <MessageInput className=' w-full' placeholder='Type a message'/>
+            </label>
+            <SpeechButton/>
+            <div className='relative flex justify-center items-center' ref={smilePicker}>
+              <FontAwesomeIcon className='w-6 h-6 cursor-pointer transition-all hover:text-sendMessage' icon={faSmile} onClick={() => setOpenEmoji(!isOpenEmoji)}/>
+              {isOpenEmoji && <EmojiPicker style={{position: 'absolute', right: 0, bottom: '100%', maxWidth: '350px', maxHeight: '350px' }} onEmojiClick={handleEmojiClick}/>}
+            </div>
+            <MessageButton>Send <FontAwesomeIcon icon={faLocationArrow}/></MessageButton>
+          </form>
+      </SpeakingContext.Provider>
     </QueryContext.Provider>
   )
 }

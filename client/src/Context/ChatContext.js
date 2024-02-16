@@ -8,3 +8,5 @@ export const OnlineIdsContext = createContext({});
 
 export const GetFriendsContext = createContext(null);
 export const MessagesContext = createContext({});
+
+export const SpeakingContext = createContext({});

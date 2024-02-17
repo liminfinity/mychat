@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { ErrorsContext, QueryContext } from '../../context/CommonContext';
 import AuthInput from './authInput';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';

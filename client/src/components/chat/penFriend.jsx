@@ -20,8 +20,12 @@ export default function PenFriend({friend}) {
     if (lastMessage.content?.length > 30) {
       let spaceIndex = 0;
       while(true) {
-        if (lastMessage.content[29 + spaceIndex] != ' ') {
-          content = `${lastMessage.content.slice(0, 30 + spaceIndex)}...`
+        if (27 + spaceIndex === 32) {
+          content = `${lastMessage.content.slice(0, 28 + spaceIndex)}...`
+          break;
+        }
+        if (lastMessage.content[27 + spaceIndex] != ' ') {
+          content = `${lastMessage.content.slice(0, 28 + spaceIndex)}...`
           break;
         }
         else {
@@ -44,8 +48,8 @@ export default function PenFriend({friend}) {
           </div>
           <Title level={3} className='550:hidden 800:inline row-start-1 row-span-1 550:row-span-2 870:row-span-1 col-start-3 550:col-start-4 870:col-start-3 col-span-5 550:col-span-6 870:col-span-5 550:pl-2 text-title font-medium text-base 870:text-sm lg:text-base'>{username}</Title>
           <span className='550:hidden 870:inline row-start-1 row-span-1 col-start-8 col-span-2 justify-self-end text-sm lg:text-base'>{timeMessage}</span>
-          <span className={' 550:hidden 870:inline row-start-2 row-span-1 col-start-3 col-span-7 550:pl-2 text-sm lg:text-base ' + ((notReadCnt && !myMessage) ? ' text-title font-semibold col-span-5': '')}>{(user.id === lastMessage.sender ? 'You: ' : '') + content}</span>
-          {notReadCnt > 0 && !myMessage && <span className={'flex 550:hidden w-6 h-6 row-start-2 row-span-1 col-start-8 col-span-2 justify-self-end rounded-full bg-title text-mainColor 870:flex justify-center items-center'}>{notReadCnt}</span>}
+          <span className={' 550:hidden 870:inline row-start-2 row-span-1 col-start-3 550:pl-2 text-sm lg:text-base overflow-hidden ' + ((notReadCnt && !myMessage) ? 'text-title font-semibold col-span-6': 'col-span-7')}>{(user.id === lastMessage.sender ? 'You: ' : '') + content}</span>
+          {notReadCnt > 0 && !myMessage && <span className={'flex 550:hidden w-6 h-6 row-start-2 row-span-1 col-start-9 col-span-1 justify-self-end rounded-full bg-title text-mainColor 870:flex justify-center items-center'}>{notReadCnt}</span>}
 
       </li>
     )

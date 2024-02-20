@@ -1,17 +1,17 @@
 import { QueryContext } from "../../context/CommonContext";
 import SearchForm from "../search/searchForm";
 import ProfilePanel from "./ProfilePanel";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import UsersContainer from "./usersContainer";
 import { UsersConnect } from "../../utils/axiosCreate";
-import { UserContext } from "../../context/ChatContext";
 import ToolsPanel from "./tools/toolsPanel";
+import { useAuth } from "../../hook/useAuth";
 
 export default function ChatHeader() {
   const [query, setQuery] = useState('');
   const [isFocus, setFocus] = useState(false);
   const [users, setUsers] = useState([])
-  const user = useContext(UserContext)
+  const {user} = useAuth()
   useEffect(() => {
     async function getUsers() {
       const res = await UsersConnect('/', {

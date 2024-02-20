@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import LinkContainer from './LinkContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import { UserContext } from '../../../context/ChatContext'
+import { useAuth } from '../../../hook/useAuth'
 
 export default function ToolsPanel() {
   const [isOpen, setOpen] = useState(false);
   const modalRef = useRef(null);
-  const user = useContext(UserContext)
+  const {user, signout} = useAuth()
 
   function handleOutsideClick(e) {
     if (!modalRef.current.contains(e.target)) {
@@ -26,10 +26,10 @@ export default function ToolsPanel() {
         <FontAwesomeIcon onClick={() => setOpen(!isOpen)} icon={faAngleDown} className={'caret' + (isOpen ? ' rotate-180' : '') }/>
         {isOpen && <ul className='absolute w-48 mt-8 right-0 glass flex flex-col py-2 px-3 rounded-xl animate-openModal'>
             <LinkContainer>
-              <Link className='block' to='/edit' state={{user}} >Edit profile</Link>
+              <Link className='block' to='/edit' state={{user}}>Edit profile</Link>
             </LinkContainer>
             <LinkContainer>
-              <Link className='block' to='/login' replace={true}>Exit</Link>
+              <Link className='block' to='/login' onClick={() => signout()} replace={true}>Exit</Link>
             </LinkContainer>
         </ul>}
     </div>

@@ -1,13 +1,14 @@
 import { useContext } from 'react'
-import { ActivePartnerContext, MobileChatContext, OnlineIdsContext, UserContext } from '../../context/ChatContext'
+import { ActivePartnerContext, MobileChatContext, OnlineIdsContext } from '../../context/ChatContext'
 import Avatar from './Avatar';
 import Title from '../common/Title';
-import { getDate, getUsername } from '../../utils/formatMessage';
+import { getDate, getUsername, sliceLongMessage } from '../../utils/formatMessage';
+import { useAuth } from '../../hook/useAuth';
 
 
 export default function PenFriend({friend}) {
     const {setMobileChatOpen} = useContext(MobileChatContext)
-    const user = useContext(UserContext);
+    const {user} = useAuth()
     const {onlineIds} = useContext(OnlineIdsContext)
     const {activePartner, setActivePartner} = useContext(ActivePartnerContext);
     const lastMessage = friend.lastMessage;
@@ -18,20 +19,7 @@ export default function PenFriend({friend}) {
     const myMessage = lastMessage.sender === user.id
     let content = ''
     if (lastMessage.content?.length > 30) {
-      let spaceIndex = 0;
-      while(true) {
-        if (27 + spaceIndex === 32) {
-          content = `${lastMessage.content.slice(0, 28 + spaceIndex)}...`
-          break;
-        }
-        if (lastMessage.content[27 + spaceIndex] != ' ') {
-          content = `${lastMessage.content.slice(0, 28 + spaceIndex)}...`
-          break;
-        }
-        else {
-          spaceIndex++
-        }
-      }
+      content = sliceLongMessage(lastMessage.content)
     }
     else {
       content = lastMessage.content;

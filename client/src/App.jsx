@@ -1,7 +1,11 @@
+import AuthProvider from './hoc/AuthProvider'
 import RoutesProvider from './hoc/RoutesProvider'
 
 export default function App() {
   return (
-    <RoutesProvider></RoutesProvider>
+    <AuthProvider>
+      <RoutesProvider></RoutesProvider>
+    </AuthProvider>
+    
   )
 }

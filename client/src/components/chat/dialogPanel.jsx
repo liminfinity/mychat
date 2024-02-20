@@ -1,10 +1,11 @@
 import { useContext, useEffect, useRef } from 'react'
-import { ActivePartnerContext, FriendsContext, GetFriendsContext, MessagesContext, UserContext } from '../../context/ChatContext'
+import { ActivePartnerContext, FriendsContext, GetFriendsContext, MessagesContext } from '../../context/ChatContext'
 import MessagePanel from './message/messagePanel'
 import { MessagesConnect } from '../../utils/axiosCreate'
+import { useAuth } from '../../hook/useAuth'
 
 export default function DialogPanel() {
-    const user = useContext(UserContext)
+    const {user} = useAuth()
     const {activePartner} = useContext(ActivePartnerContext)
     const {messages, setMessages} = useContext(MessagesContext)
     const getFriends = useContext(GetFriendsContext)

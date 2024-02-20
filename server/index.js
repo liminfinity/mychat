@@ -9,7 +9,7 @@ const { connect, disconnect } = require('mongoose');
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5000;
-
+const SERVER_HOST = process.env.SERVER_HOST || 'localhost'
 app.use(express.json({limit: '40mb'}));
 app.use('/assets/img', express.static(path.resolve('assets/userAvatars')))
 app.use(cors({
@@ -22,7 +22,7 @@ const httpServer = createServer(app)
 const socketServer = listen(httpServer);
 
 
-httpServer.listen(PORT, async () => {
+httpServer.listen(PORT, SERVER_HOST, async () => {
     await connect(process.env.MONGO_URL)
     console.log(`mongodb connected`)
     console.log(`server started on ${PORT} port`)

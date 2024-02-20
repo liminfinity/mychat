@@ -5,8 +5,9 @@ import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import AuthButton from './authButton';
 import { loginShema } from '../../validation/authShema';
 import { AuthConnect } from '../../utils/axiosCreate';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import { useImmer } from 'use-immer';
+import { useAuth } from '../../hook/useAuth';
 
 export default function LoginForm() {
     const [form, setForm] = useImmer({
@@ -15,6 +16,9 @@ export default function LoginForm() {
     })
     const {setErrors} = useContext(ErrorsContext);
     const navigate = useNavigate();
+    const {signin} = useAuth();
+    const location = useLocation();
+    const fromPage = location.state?.from?.pathname || '/chat'
     async function handleLogin(e) {
         e.preventDefault();
         try {
@@ -22,13 +26,8 @@ export default function LoginForm() {
             const response = await AuthConnect.post('login', JSON.stringify({auth: login}));
             if (response.status === 200) {
                 const user = response.data;
-                navigate('/chat', {
-                    replace: true,
-                    state: {
-                        user
-                    }
-                })
-
+                console.log(user)
+                signin(user, navigate(fromPage, { replace: true }))
             } 
         } catch(e) {
             let err = ''

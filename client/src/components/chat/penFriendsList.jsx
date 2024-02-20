@@ -16,7 +16,7 @@ export default function PenFriendsList() {
       {Boolean(friends.length) && (
         <ul className='overflow-y-auto overflow-x-hidden last:border-b-2'>
           {frSorted.map(friend => {
-            return <PenFriend friend={friend} key={friend.id}/>
+            return <PenFriend friend={friend} key={`${friend.id} ${friend.lastMessage.content}`}/>
           })}
         </ul>
       )}

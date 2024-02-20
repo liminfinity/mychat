@@ -1,8 +1,7 @@
-import { useContext } from 'react'
-import { UserContext } from '../../context/ChatContext'
 import Avatar from './Avatar'
+import { useAuth } from '../../hook/useAuth'
 export default function ProfilePanel() {
-    const user = useContext(UserContext)
+    const {user} = useAuth()
 
     return (
         <div className='flex justify-center items-center gap-4'>

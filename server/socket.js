@@ -33,7 +33,6 @@ module.exports.listen = (app) => {
     })
     io.sockets.on('connection', async mysocket => {
         try {
-            /* socket.disconnect() */
             const user = JSON.parse(mysocket.handshake.query?.user);
 
             const id = await setSocket(user.id, mysocket.id);
@@ -74,26 +73,12 @@ module.exports.listen = (app) => {
                 }
                 cb({status: 'delivered'})
             })
-            /* socket.on('MESSAGE:SEND', async (message, cb) => {
-                
-                const queryParams1 = new URLSearchParams({userId: message.sender})
-                const queryParams2 = new URLSearchParams({userId: message.recipient})
-                const newMessage = {
-                    ...message,
-                    recipient: undefined
+            mysocket.on('MESSAGE:WRITTEN', async userId => {
+                const sockets = await getSockets(userId)
+                for (const socket of sockets) {
+                    mysocket.to(socket).emit('MESSAGE:WRITTEN')
                 }
-
-                const resultSender = await axios(`http://localhost:5000/chat/sockets?${queryParams1}`)
-                const resultRecipient = await axios(`http://localhost:5000/chat/sockets?${queryParams2}`)
-                if (resultSender.status && resultRecipient.status) {
-                    const senderSocket = resultSender.data.socket;
-                    const recipientSocket = resultRecipient.data.socket;
-                    io.to(senderSocket).to(recipientSocket).emit('MESSAGE:GET', newMessage);
-
-                }
-                cb({status: 'delivered'})
-
-            }) */
+            })
         } catch(e) {
             console.log(e)
         }

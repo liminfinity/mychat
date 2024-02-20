@@ -1,12 +1,13 @@
 import { useContext } from 'react'
-import { ActivePartnerContext, UserContext } from '../../../context/ChatContext'
+import { ActivePartnerContext } from '../../../context/ChatContext'
 import Avatar from '../Avatar'
 import MessageContent from './messageContent'
 import { getDate } from '../../../utils/formatMessage'
+import { useAuth } from '../../../hook/useAuth'
 
 export default function MessagePanel({message, className}) {
     const {activePartner} = useContext(ActivePartnerContext)
-    const user = useContext(UserContext)
+    const {user} = useAuth()
     const timestamp = new Date(message.timestamp)
     const isFriend = activePartner.id === message.sender
     const timestampMessage = getDate(timestamp);

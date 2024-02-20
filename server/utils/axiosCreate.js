@@ -1,9 +1,10 @@
 const axios = require('axios')
 require('dotenv').config()
 
-
+const SERVER_HOST = process.env.SERVER_HOST || 'localhost'
+const SERVER_PORT = process.env?.SERVER_PORT || 5000;
 const SocketsConnect = axios.create({
-    baseURL: `http://localhost:${process.env?.SERVER_PORT || 5000}/chat/sockets`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/chat/sockets`,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -11,7 +12,7 @@ const SocketsConnect = axios.create({
 })
 
 const MessagesConnect = axios.create({
-    baseURL: `http://localhost:${process.env?.SERVER_PORT || 5000}/chat/messages`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/chat/messages`,
     headers: {
         'Content-Type': 'application/json'
     },

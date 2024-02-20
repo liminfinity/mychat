@@ -29,7 +29,7 @@ export default function EditAvatarPanel() {
             <CameraOpenContext.Provider value={{isCameraOpen, setCameraOpen}}>
                 <div ref={modalRef}>
                     <FontAwesomeIcon onClick={() => setOpen(!isOpen)} className='absolute photo bottom-0 right-0' icon={faCamera}/>
-                    {isOpen && <PhotoMethodPanel setOpen={setOpen} className=' absolute left-full'/>}
+                    {isOpen && <PhotoMethodPanel setOpen={setOpen} className=' absolute left-full -ml-2'/>}
                     {isCameraOpen && <CameraPanel/>}
                 </div>
             </CameraOpenContext.Provider>

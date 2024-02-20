@@ -1,9 +1,9 @@
 import axios from 'axios'
 
 const SERVER_PORT = 5000;
-
+const SERVER_HOST = 'localhost';
 export const AuthConnect = axios.create({
-    baseURL: `http://localhost:${SERVER_PORT}/auth`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/auth`,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -11,7 +11,7 @@ export const AuthConnect = axios.create({
 })
 
 export const OnlineConnect = axios.create({
-    baseURL: `http://localhost:${SERVER_PORT}/chat/online`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/chat/online`,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -19,7 +19,7 @@ export const OnlineConnect = axios.create({
 })
 
 export const FriendsConnect = axios.create({
-    baseURL: `http://localhost:${SERVER_PORT}/chat/friends`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/chat/friends`,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -27,7 +27,7 @@ export const FriendsConnect = axios.create({
 })
 
 export const MessagesConnect = axios.create({
-    baseURL: `http://localhost:${SERVER_PORT}/chat/messages`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/chat/messages`,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -35,7 +35,7 @@ export const MessagesConnect = axios.create({
 })
 
 export const UsersConnect = axios.create({
-    baseURL: `http://localhost:${SERVER_PORT}/chat/users`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/chat/users`,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -43,7 +43,7 @@ export const UsersConnect = axios.create({
 })
 
 export const UserConnect = axios.create({
-    baseURL: `http://localhost:${SERVER_PORT}/user`,
+    baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/user`,
     headers: {
         'Content-Type': 'application/json'
     },

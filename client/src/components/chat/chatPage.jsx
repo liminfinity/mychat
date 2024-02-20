@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
-import {useLocation} from 'react-router-dom'
 import Title from '../common/Title';
 import MyFriends from './myPenFriends';
-import { FriendsContext, ActivePartnerContext, UserContext, SendMessageContext, MessagesContext, OnlineIdsContext, GetFriendsContext, MobileChatContext } from '../../context/ChatContext';
+import { FriendsContext, ActivePartnerContext, SendMessageContext, MessagesContext, OnlineIdsContext, GetFriendsContext, MobileChatContext } from '../../context/ChatContext';
 import io from 'socket.io-client'
 import ChatPanel from './chatPanel';
 import ChatHeader from './chatHeader';
@@ -11,6 +10,7 @@ import { FriendsConnect, MessagesConnect, OnlineConnect } from '../../utils/axio
 import {useImmer} from 'use-immer'
 import {enableMapSet} from 'immer'
 import { QueryContext } from '../../context/CommonContext';
+import { useAuth } from '../../hook/useAuth';
 
 enableMapSet()
 
@@ -24,8 +24,7 @@ export default function ChatPage() {
     const [query, setQuery] = useState('');
     const isMobile = WinWidth < 550;
     const socket = useRef(null);
-    const location = useLocation();
-    const user = location.state.user;
+    const {user} = useAuth();
     function handleResize()  {
       setWinWidth(innerWidth);
     }
@@ -46,7 +45,6 @@ export default function ChatPage() {
     }
 
     async function getMessages() {
-      console.log(3)
       const res = await MessagesConnect.get('/', {
           params: {
               userId: user.id,
@@ -55,8 +53,7 @@ export default function ChatPage() {
       })
       const {messages} = res.data;
       setMessages(messages);
-      const friends = await getFriends();
-      setFriends(friends)
+      socket.current.emit('MESSAGE:WRITTEN', user.id)
     }
     useEffect(() => {
         socket.current = io('http://localhost:5000', {
@@ -94,21 +91,6 @@ export default function ChatPage() {
         }
   }, [query])
 
-    /* useEffect(() => {
-      socket.current.on('disconnect', async () => {
-        await axios('http://localhost:5000/chat/sockets', {
-            method: 'DELETE',
-            data: JSON.stringify({userId: user.id}),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-        })
-        socket.current.emit('USER:OFFLINE', user.id)
-      })
-      return () => {
-        socket.current.removeAllListeners('disconnect')
-      }
-    }, []) */
     useEffect(() => {
       socket.current.on('USER:ONLINE', userId => {
         if (user.id != userId) {
@@ -138,19 +120,32 @@ export default function ChatPage() {
     useEffect(() => {
       socket.current.on('MESSAGE:GET', async message => {
         if ([message.recipient, message.sender].includes(activePartner?.id)) {
-          console.log(1)
-          await getMessages()
+          await getMessages();
         }
-        else {
-          console.log(2)
-          const friends = await getFriends();
-          setFriends(friends)
-        }
+        const friends = await getFriends();
+        setFriends(friends)
       })
       return () => {
         socket.current.removeAllListeners('MESSAGE:GET')
       }
     }, [activePartner])
+
+    useEffect(() => {
+      if (activePartner) {
+        getMessages()
+      }
+    }, [activePartner])
+
+    useEffect(() => {
+      socket.current.on('MESSAGE:WRITTEN', async () => {
+        const friends = await getFriends()
+        setFriends(friends)
+      })
+      return () => {
+        socket.current.removeAllListeners('MESSAGE:WRITTEN')
+      }
+    }, [])
+
     async function sendMessage(content) {
       const message = {
         sender: user.id,
@@ -164,59 +159,41 @@ export default function ChatPage() {
         }
       })
     }
-      /* const result = await axios('http://localhost:5000/chat/messages', {
-          method: 'POST',
-          data: JSON.stringify({message}),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-      })
-      const messageId = result.data.messageId;
-      console.log(messageId)
-      message.id = messageId;
-      socket.current.emit('MESSAGE:SEND', message, async (status) => {
-        if (status === 'delivered') {
-          console.log('Сообщение доставлено!')
-        }
-      })
-    } */
     return (
       <MobileChatContext.Provider value={{isMobileChatOpen, setMobileChatOpen, isMobile}}>
-        <UserContext.Provider value={user}>
-          <OnlineIdsContext.Provider value={{onlineIds}}>
-            <GetFriendsContext.Provider value={getFriends}>
-              <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
-                <main className='flex flex-col h-screen'>
-                  <ChatHeader/>
-                  <ChatPageContainer>
-                    <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
-                      <Title level={2} className='text-xl sm:text-2xl text-title font-medium'>Chat</Title>
-                    </section>
-                    <section className={'row-start-2 row-span-9 col-start-1 col-span-9 ' +
-                    '550:col-span-2 800:col-span-3 bg-mainColor flex flex-col ' + (isMobileChatOpen && isMobile ? 'hidden' : '')}>
-                      <QueryContext.Provider value={{query, setQuery}}>
-                        <FriendsContext.Provider value={{friends}}>
-                            <MyFriends/>
-                        </FriendsContext.Provider>
-                      </QueryContext.Provider>
-                    </section>
-                    <section className={' px-2 910:px-10 py-5 row-start-2 row-span-9 ' +
-                    'col-start-1 col-span-9 550:col-start-3 550:col-span-7 800:col-start-4 800:col-span-6 ' +
-                      '550:flex flex-col bg-mainColor ' + (isMobileChatOpen && isMobile ? 'flex' : 'hidden')}>
-                        <FriendsContext.Provider value={{setFriends}}>
-                          <SendMessageContext.Provider value={sendMessage}>
-                            <MessagesContext.Provider value={{messages, setMessages}}>
-                              <ChatPanel/>
-                            </MessagesContext.Provider>
-                          </SendMessageContext.Provider>
-                        </FriendsContext.Provider>
-                    </section>
-                  </ChatPageContainer>
-                </main>
-              </ActivePartnerContext.Provider>
-            </GetFriendsContext.Provider>
-          </OnlineIdsContext.Provider>
-        </UserContext.Provider>
+        <OnlineIdsContext.Provider value={{onlineIds}}>
+          <GetFriendsContext.Provider value={getFriends}>
+            <ActivePartnerContext.Provider value={{activePartner, setActivePartner}}>
+              <main className='flex flex-col h-screen'>
+                <ChatHeader/>
+                <ChatPageContainer>
+                  <section className='row-start-1 row-end-2 col-span-9 flex items-center'>
+                    <Title level={2} className='text-xl sm:text-2xl text-title font-medium'>Chat</Title>
+                  </section>
+                  <section className={'row-start-2 row-span-9 col-start-1 col-span-9 ' +
+                  '550:col-span-2 800:col-span-3 bg-mainColor flex flex-col ' + (isMobileChatOpen && isMobile ? 'hidden' : '')}>
+                    <QueryContext.Provider value={{query, setQuery}}>
+                      <FriendsContext.Provider value={{friends}}>
+                          <MyFriends/>
+                      </FriendsContext.Provider>
+                    </QueryContext.Provider>
+                  </section>
+                  <section className={' px-2 910:px-10 py-5 row-start-2 row-span-9 ' +
+                  'col-start-1 col-span-9 550:col-start-3 550:col-span-7 800:col-start-4 800:col-span-6 ' +
+                    '550:flex flex-col bg-mainColor ' + (isMobileChatOpen && isMobile ? 'flex' : 'hidden')}>
+                      <FriendsContext.Provider value={{setFriends}}>
+                        <SendMessageContext.Provider value={sendMessage}>
+                          <MessagesContext.Provider value={{messages, setMessages}}>
+                            <ChatPanel/>
+                          </MessagesContext.Provider>
+                        </SendMessageContext.Provider>
+                      </FriendsContext.Provider>
+                  </section>
+                </ChatPageContainer>
+              </main>
+            </ActivePartnerContext.Provider>
+          </GetFriendsContext.Provider>
+        </OnlineIdsContext.Provider>
       </MobileChatContext.Provider>
     )
 }

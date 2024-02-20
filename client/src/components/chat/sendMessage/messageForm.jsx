@@ -44,7 +44,7 @@ export default function MessageForm() {
             <label className='flex-grow'>
               <MessageInput className=' w-full' placeholder='Type a message'/>
             </label>
-            <SpeechButton/>
+            {"webkitSpeechRecognition" in window && <SpeechButton/>}
             <div className='relative flex justify-center items-center' ref={smilePicker}>
               <FontAwesomeIcon className='w-6 h-6 cursor-pointer transition-all hover:text-sendMessage' icon={faSmile} onClick={() => setOpenEmoji(!isOpenEmoji)}/>
               {isOpenEmoji && <EmojiPicker className='emojiPicker' onEmojiClick={handleEmojiClick}/>}

@@ -5,8 +5,9 @@ import { faAddressCard, faEnvelope, faLock } from '@fortawesome/free-solid-svg-i
 import AuthButton from './authButton';
 import {signUpShema } from '../../validation/authShema';
 import { AuthConnect } from '../../utils/axiosCreate';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import { useImmer } from 'use-immer';
+import { useAuth } from '../../hook/useAuth';
 
 export default function SignUpForm() {
     const [form, setForm] = useImmer({
@@ -18,6 +19,10 @@ export default function SignUpForm() {
     }) 
     const {setErrors} = useContext(ErrorsContext);
     const navigate = useNavigate();
+    const {signup} = useAuth();
+    const location = useLocation();
+    const fromPage = location.state?.from?.pathname || '/chat'
+
     async function handleSignUp(e) {
         e.preventDefault();
         try {
@@ -25,13 +30,7 @@ export default function SignUpForm() {
             const response = await AuthConnect.post('signup', JSON.stringify({newUser: {...newUser, confirmPassword: undefined}}));
             if (response.status === 200) {
                 const user = response.data;
-                navigate('/chat', {
-                    replace: true,
-                    state: {
-                        user
-                    }
-                })
-
+                signup(user, navigate(fromPage, { replace: true }))
             } 
         } catch(e) {
             let err = ''

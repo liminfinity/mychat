@@ -11,7 +11,9 @@ import {useImmer} from 'use-immer'
 import {enableMapSet} from 'immer'
 import { QueryContext } from '../../context/CommonContext';
 import { useAuth } from '../../hook/useAuth';
-
+import config from '../../../config/default.json'
+const SERVER_PORT = config['SERVER_PORT'];
+const SERVER_HOST = config['SERVER_HOST'];
 enableMapSet()
 
 export default function ChatPage() {
@@ -56,7 +58,7 @@ export default function ChatPage() {
       socket.current.emit('MESSAGE:WRITTEN', user.id)
     }
     useEffect(() => {
-        socket.current = io('http://localhost:5000', {
+        socket.current = io(`http://${SERVER_HOST}:${SERVER_PORT}`, {
             path: '/chat-io',
             query: {
                 user: JSON.stringify(user)

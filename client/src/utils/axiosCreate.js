@@ -1,7 +1,7 @@
 import axios from 'axios'
-
-const SERVER_PORT = 5000;
-const SERVER_HOST = 'localhost';
+import config from '../../config/default.json'
+const SERVER_PORT = config['SERVER_PORT'];
+const SERVER_HOST = config['SERVER_HOST'];
 export const AuthConnect = axios.create({
     baseURL: `http://${SERVER_HOST}:${SERVER_PORT}/auth`,
     headers: {
